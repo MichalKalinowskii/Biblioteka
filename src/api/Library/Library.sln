@@ -1,5 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113 d17.12
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{3107D482-7B27-4DB2-B074-097FEC8596B2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Api", "Api\Library.Api\Library.Api.csproj", "{24F732D7-E995-4CF6-B827-CDD568801043}"
@@ -15,6 +18,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D0C82F56-379D-476F-BEAA-F1992A7121AD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.UnitTests", "Tests\Library.UnitTests\Library.UnitTests.csproj", "{90094720-FD34-4A32-98E3-549D47C523ED}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{25E7FB51-3788-4808-8287-1C111958F6E3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,6 +43,9 @@ Global
 		{90094720-FD34-4A32-98E3-549D47C523ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90094720-FD34-4A32-98E3-549D47C523ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90094720-FD34-4A32-98E3-549D47C523ED}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{24F732D7-E995-4CF6-B827-CDD568801043} = {3107D482-7B27-4DB2-B074-097FEC8596B2}

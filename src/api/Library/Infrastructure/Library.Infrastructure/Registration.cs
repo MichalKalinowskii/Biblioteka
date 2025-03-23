@@ -1,7 +1,9 @@
+using Library.Domain.Books.Interfaces;
 using Library.Domain.SeedWork;
 using Library.Infrastructure.Authentication;
 using Library.Infrastructure.Data;
 using Library.Infrastructure.Domain;
+using Library.Infrastructure.Domain.Books;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -22,6 +24,7 @@ public static class Registration
             .AddDefaultTokenProviders();
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IBookPersistence, BookRepository>();
         
         services.AddJwtAuthentication(configuration);
     }
