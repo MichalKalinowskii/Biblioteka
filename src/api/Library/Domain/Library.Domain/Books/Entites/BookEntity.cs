@@ -14,7 +14,7 @@ namespace Library.Domain.Books.Entites
         public int GenreId { get; set; }
         public Genre Genre { get; set; }
         public DateTime ReleaseDate { get; set; }
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
         public string ISBN { get; set; }
         public string Publisher { get; set; } 
         public List<AuthorEntity> Authors { get; set; }
