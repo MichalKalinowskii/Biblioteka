@@ -11,13 +11,13 @@ public class Book
 
     public Book(BookEntity book, IBookPersistence bookPersistence)
     {
-        ValidateBook(book);
+        ValidateBook(book, bookPersistence);
 
         this.book = book;
         this.bookPersistence = bookPersistence;
     }
 
-    private void ValidateBook(BookEntity book)
+    private void ValidateBook(BookEntity book, IBookPersistence bookPersistence)
     {
         if (bookPersistence is null)
         {
@@ -31,30 +31,30 @@ public class Book
 
         if (string.IsNullOrWhiteSpace(book.Publisher))
         {
-            throw new DomainException("no publisher given");
+            throw new DomainException("No publisher given");
         }
 
         if (string.IsNullOrWhiteSpace(book.Title))
         {
-            throw new DomainException("no book title given");
+            throw new DomainException("No book title given");
         }
 
         if (string.IsNullOrWhiteSpace(book.TitlePageImageUrl))
         {
-            throw new DomainException("no title page image url given");
+            throw new DomainException("No title page image url given");
         }
 
         if (book.ReleaseDate == default)
         {
-            throw new DomainException("no release date given");
+            throw new DomainException("No release date given");
         }
 
         if (string.IsNullOrWhiteSpace(book.ISBN))
         {
-            throw new DomainException("no ISBN given");
+            throw new DomainException("No ISBN given");
         }
 
-        if (book.ISBN.Length != 10 || book.ISBN.Length != 13)
+        if (book.ISBN.Length != 10 && book.ISBN.Length != 13)
         {
             throw new DomainException("ISBN must be 10 or 13 characters long");
         }
@@ -80,7 +80,7 @@ public class Book
     {
         if (!authors.Any())
         {
-            throw new DomainException("no authors given");
+            throw new DomainException("No authors given");
         }
 
         this.book.Authors.AddRange(authors);
@@ -90,7 +90,7 @@ public class Book
     {
         if (!authorIds.Any())
         {
-            throw new DomainException("no authors given");
+            throw new DomainException("No authors given");
         }
         
         this.book.Authors.RemoveAll(x => authorIds.Contains(x.Id));
@@ -120,7 +120,7 @@ public class Book
     {
         if (!this.book.Authors.Any())
         {
-            throw new DomainException("no authors given");
+            throw new DomainException("No authors given");
         }
 
         if (this.book.Authors.Any(x => string.IsNullOrWhiteSpace(x.FirstName)))
