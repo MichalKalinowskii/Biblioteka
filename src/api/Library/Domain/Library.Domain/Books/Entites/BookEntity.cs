@@ -8,11 +8,10 @@ namespace Library.Domain.Books.Entites
 {
     public class BookEntity
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Title { get; set; }
         public string TitlePageImageUrl { get; set; }
-        public int GenreId { get; set; }
-        public Genre Genre { get; set; }
+        public string GenreName { get; set; }
         public DateTime ReleaseDate { get; set; }
         public string Description { get; set; } = string.Empty;
         public string ISBN { get; set; }

@@ -2,19 +2,36 @@ using Library.Domain.Books.Entites;
 using Library.Domain.Books.Interfaces;
 using Library.Domain.SeedWork;
 
-namespace Library.Domain.Books;
+namespace Library.Domain.Books.Models;
 
 public class Book
 {
-    private BookEntity book;
+    public Guid Id { get; set; }
+    public string Title { get; set; }
+    public string TitlePageImageUrl { get; set; }
+    public Genre Genre { get; set; }
+    public DateTime ReleaseDate { get; set; }
+    public string Description { get; set; } = string.Empty;
+    public string ISBN { get; set; }
+    public string Publisher { get; set; }
+
+
     private IBookPersistence bookPersistence;
 
-    public Book(BookEntity book, IBookPersistence bookPersistence)
+    public Book(BookEntity book)
+    //IBookPersistence bookPersistence)
     {
-        ValidateBook(book, bookPersistence);
+        Id = Guid.NewGuid();
+        Title = book.Title;
+        TitlePageImageUrl = book.TitlePageImageUrl;
+        Genre = new Genre(book.GenreName);
+        ReleaseDate = book.ReleaseDate;
+        Description = book.Description;
+        ISBN = book.ISBN;
+        Publisher = book.Publisher;
 
-        this.book = book;
-        this.bookPersistence = bookPersistence;
+        //ValidateBook(book, bookPersistence);
+        //this.bookPersistence = bookPersistence;
     }
 
     private void ValidateBook(BookEntity book, IBookPersistence bookPersistence)
@@ -70,7 +87,7 @@ public class Book
         if (string.IsNullOrWhiteSpace(genre.Name))
         {
             throw new DomainException("Genre name is required");
-        }   
+        }
 
         this.book.GenreId = genre.Id;
         this.book.Genre = genre;
@@ -92,7 +109,7 @@ public class Book
         {
             throw new DomainException("No authors given");
         }
-        
+
         this.book.Authors.RemoveAll(x => authorIds.Contains(x.Id));
     }
 
@@ -101,7 +118,7 @@ public class Book
         ValidateGenre();
         ValidateAuthors();
 
-        return await this.bookPersistence.Save(this.book);
+        return await bookPersistence.Save(this.book);
     }
 
     private void ValidateGenre()
