@@ -1,6 +1,6 @@
 namespace Library.Domain.Rentals;
 
-internal class BookRental
+public class BookRental
 {
     public int Id { get; private set; }
     

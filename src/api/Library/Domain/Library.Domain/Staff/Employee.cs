@@ -4,9 +4,9 @@ public class Employee
 {
     public int Id { get; private set; }
     
-    public int UserId { get; set; }
+    public Guid UserId { get; private set; }
 
-    internal Employee(int userId)
+    internal Employee(Guid userId)
     {
         UserId = userId;
     }

@@ -4,11 +4,11 @@ public class Client
 {
     public int Id { get; private set; }
     
-    public int UserId { get; private set; }
+    public Guid UserId { get; private set; }
     
     public Guid LibraryCardId { get; private set; }
 
-    public Client(int userId, Guid libraryCardId)
+    public Client(Guid userId, Guid libraryCardId)
     {
         UserId = userId;
         LibraryCardId = libraryCardId;

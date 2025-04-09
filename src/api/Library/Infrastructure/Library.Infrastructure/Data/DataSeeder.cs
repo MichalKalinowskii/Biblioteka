@@ -39,7 +39,7 @@ namespace Library.Infrastructure.Data
             string userPassword = "TestPassword123!";
             var user = new ApplicationUser
             {
-                Id = 0,
+                Id = Guid.NewGuid(),
                 Email = userEmail,
                 FirstName = "Test",
                 LastName = "User",
