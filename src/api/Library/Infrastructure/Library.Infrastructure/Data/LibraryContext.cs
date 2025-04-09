@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Library.Infrastructure.Data;
 
-public class LibraryContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
+public class LibraryContext : IdentityDbContext<ApplicationUser, IdentityRole<int>, int>
 {
     public LibraryContext(DbContextOptions<LibraryContext> options)
         : base(options)
