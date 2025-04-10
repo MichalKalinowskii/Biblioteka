@@ -58,7 +58,7 @@ namespace Library.Domain.Books
             
             if (book is null)
             {
-                return Result.Failure(BookErrors.BookAlreadyExists);
+                return Result.Failure(BookErrors.BookNotFound);
             }
 
             book.ChangeGenre(newGenreName);

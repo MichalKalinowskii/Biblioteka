@@ -15,9 +15,6 @@ public class Book
     public string ISBN { get; set; }
     public string Publisher { get; set; }
 
-
-    private IBookPersistence bookPersistence;
-
     public Book(BookEntity book)
     {
         Id = Guid.NewGuid();
