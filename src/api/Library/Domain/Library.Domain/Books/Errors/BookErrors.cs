@@ -16,5 +16,7 @@ namespace Library.Domain.Books.Errors
         public static Error ISBNMissing => new("Book.ISBNMissing", "ISBN is missing");
         public static Error IncorrectISBNGiven => new("Book.IncorrectISBNGiven", "Incorrect ISBN given, it must be 10 or 13 characters long");
         public static Error GenreNameMissing => new("Book.GenreNameMissing", "Book genre name is missing");
+        public static Error BookAlreadyExists => new("Book.BookAlreadyExists", "Book already exists");
+        public static Error BookNotFound => new("Book.BookNotFound", "Book not found");
     }
 }

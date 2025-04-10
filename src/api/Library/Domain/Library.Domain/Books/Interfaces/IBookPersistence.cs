@@ -8,7 +8,9 @@ namespace Library.Domain.Books.Interfaces
     {
         Task<Result> AddBookAsync(Book book, CancellationToken cancellationToken);
 
-        Task<Book> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+        Task<Book> GetBookByISBN(string ISBN, CancellationToken cancellationToken);
 
+        Task<Book> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+        Task<Result> UpdateBookAsync(Book book, CancellationToken cancellationToken);
     }
 }
