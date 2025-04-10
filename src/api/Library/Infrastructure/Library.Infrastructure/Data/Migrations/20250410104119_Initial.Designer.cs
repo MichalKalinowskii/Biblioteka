@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Library.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    [Migration("20250409210253_Initial")]
+    [Migration("20250410104119_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -68,6 +68,9 @@ namespace Library.Infrastructure.Data.Migrations
 
                     b.Property<DateTime>("ReturnDate")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -299,11 +302,10 @@ namespace Library.Infrastructure.Data.Migrations
             modelBuilder.Entity("Library.Domain.Rentals.BookRental", b =>
                 {
                     b.HasOne("Library.Domain.Rentals.Rental", null)
-                        .WithMany()
+                        .WithMany("BookRentals")
                         .HasForeignKey("RentalId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_BookRental_Rentals");
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Library.Domain.Rentals.Rental", b =>
@@ -365,6 +367,11 @@ namespace Library.Infrastructure.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Library.Domain.Rentals.Rental", b =>
+                {
+                    b.Navigation("BookRentals");
                 });
 #pragma warning restore 612, 618
         }

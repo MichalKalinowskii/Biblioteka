@@ -181,7 +181,8 @@ namespace Library.Infrastructure.Data.Migrations
                     LibraryCardId = table.Column<Guid>(type: "uuid", nullable: false),
                     EmployeeId = table.Column<int>(type: "integer", nullable: false),
                     RentalDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ReturnDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    ReturnDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -208,11 +209,11 @@ namespace Library.Infrastructure.Data.Migrations
                 {
                     table.PrimaryKey("PK_BookRentals", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_BookRental_Rentals",
+                        name: "FK_BookRentals_Rentals_RentalId",
                         column: x => x.RentalId,
                         principalTable: "Rentals",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(

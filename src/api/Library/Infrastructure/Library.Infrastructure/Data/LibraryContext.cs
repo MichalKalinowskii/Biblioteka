@@ -12,9 +12,7 @@ namespace Library.Infrastructure.Data;
 public class LibraryContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
 {
     public virtual DbSet<Rental> Rentals { get; set; }
-    
     public virtual DbSet<BookRental> BookRentals { get; set; }
-    
     public virtual DbSet<Employee> Employees { get; set; }
     
     
