@@ -11,6 +11,7 @@ namespace Library.Domain.Books.Interfaces
         Task<Book> GetBookByISBN(string ISBN, CancellationToken cancellationToken);
 
         Task<Book> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+
         Task<Result> UpdateBookAsync(Book book, CancellationToken cancellationToken);
     }
 }
