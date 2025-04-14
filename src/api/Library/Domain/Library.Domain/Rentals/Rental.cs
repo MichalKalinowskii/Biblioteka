@@ -42,7 +42,7 @@ public class Rental
             return Result<Rental>.Failure(RentalErrors.InvalidEmployee());
         }
         
-        if (!(returnDate >= DateTime.UtcNow))
+        if (returnDate < DateTime.UtcNow)
         {
             return Result<Rental>.Failure(RentalErrors.ReturnDateShouldBePlacedInFuture());
         }

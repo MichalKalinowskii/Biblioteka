@@ -1,5 +1,6 @@
 using System.Reflection;
 using Library.Api.Endpoints;
+using Library.Api.Middlewares;
 using Library.Application;
 using Library.Infrastructure;
 using Library.Infrastructure.Data;
@@ -27,5 +28,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.Run();
