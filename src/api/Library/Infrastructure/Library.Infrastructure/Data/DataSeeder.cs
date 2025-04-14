@@ -28,16 +28,21 @@ namespace Library.Infrastructure.Data
 
             await _dbContext.Database.EnsureCreatedAsync();
 
-            ApplicationUser applicationUser = await AddApplicationUser();
+            List<ApplicationUser> applicationUsers = await AddApplicationUsers();
+            
+            
 
             await _dbContext.SaveChangesAsync();
         }
 
-        private async Task<ApplicationUser> AddApplicationUser()
+        private async Task<List<ApplicationUser>> AddApplicationUsers()
         {
+            List<ApplicationUser> applicationUsers = new List<ApplicationUser>();
+            
             string userEmail = "seededUser1@test.com";
             string userPassword = "TestPassword123!";
-            var user = new ApplicationUser
+            
+            applicationUsers.Add(new ApplicationUser
             {
                 Id = Guid.NewGuid(),
                 Email = userEmail,
@@ -46,11 +51,41 @@ namespace Library.Infrastructure.Data
                 NormalizedEmail = userEmail.ToUpper(),
                 UserName = "testuser@example.com",
                 PasswordHash = _passwordHasher.HashPassword(default, userPassword)
-            };
+            });
+            
+            string user2Email = "seededUser2@test.com";
+            string user2Password = "TestPassword123!";
+            
+            applicationUsers.Add(new ApplicationUser
+            {
+                Id = Guid.NewGuid(),
+                Email = user2Email,
+                FirstName = "Test",
+                LastName = "User",
+                NormalizedEmail = user2Email.ToUpper(),
+                UserName = "testuser@example.com",
+                PasswordHash = _passwordHasher.HashPassword(default, user2Password)
+            });
+            
+            string user3Email = "seededUser3@test.com";
+            string user3Password = "TestPassword123!";
+            
+            applicationUsers.Add(new ApplicationUser
+            {
+                Id = Guid.NewGuid(),
+                Email = user3Email,
+                FirstName = "Test",
+                LastName = "User",
+                NormalizedEmail = user3Email.ToUpper(),
+                UserName = "testuser@example.com",
+                PasswordHash = _passwordHasher.HashPassword(default, user3Password)
+            });
 
-            await _userManager.CreateAsync(user);
+            await _userManager.CreateAsync(applicationUsers[0]);
+            await _userManager.CreateAsync(applicationUsers[1]);
+            await _userManager.CreateAsync(applicationUsers[2]);
 
-            return user;
+            return applicationUsers;
         }
     }
 }
