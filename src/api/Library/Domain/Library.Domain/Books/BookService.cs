@@ -57,7 +57,7 @@ namespace Library.Domain.Books
             return Result.Success();
         }
 
-        public async Task<Result> ChangeBookGenreAsync(string ISBN, string newGenreName, CancellationToken cancellationToken)
+        public async Task<Result> ChangeBookGenreAsync(string ISBN, Genre newGenre, CancellationToken cancellationToken)
         {
             var bookISBN = await bookPersistence.GetBookByISBN(ISBN, cancellationToken);
             
@@ -73,7 +73,7 @@ namespace Library.Domain.Books
 
             var book = bookISBN.Value!;
 
-            book.ChangeGenre(newGenreName);
+            book.ChangeGenre(newGenre);
 
             var updateBookResult = bookPersistence.UpdateBook(book, cancellationToken);
             if (updateBookResult.IsFailure)

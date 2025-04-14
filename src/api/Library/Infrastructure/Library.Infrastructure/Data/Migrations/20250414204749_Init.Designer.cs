@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Library.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    [Migration("20250414192907_Init")]
+    [Migration("20250414204749_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -24,6 +24,159 @@ namespace Library.Infrastructure.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("Library.Domain.BookCopies.Models.BookCopy", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("BookId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("LocationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.ToTable("BookCopies");
+                });
+
+            modelBuilder.Entity("Library.Domain.BookCopies.Models.BookCopyStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BookCopyStatuses");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Available"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Reserved"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Lost"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Damaged"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Unavailable"
+                        });
+                });
+
+            modelBuilder.Entity("Library.Domain.Books.Models.Book", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Genre")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ISBN")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("character varying(13)");
+
+                    b.Property<string>("Publisher")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("ReleaseDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("TitlePageImageUrl")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Books");
+                });
+
+            modelBuilder.Entity("Library.Domain.Books.Models.Genre", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Genres");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Comedy"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Thriller"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Drama"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Horror"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Romance"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "SinceFiction"
+                        });
+                });
 
             modelBuilder.Entity("Library.Domain.Clients.Client", b =>
                 {
@@ -322,6 +475,15 @@ namespace Library.Infrastructure.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("Library.Domain.BookCopies.Models.BookCopy", b =>
+                {
+                    b.HasOne("Library.Domain.Books.Models.Book", null)
+                        .WithMany()
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Library.Domain.Clients.Client", b =>

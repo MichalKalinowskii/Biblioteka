@@ -47,12 +47,20 @@ namespace Library.Domain.Books
                 return Result<Book>.Failure(BookErrors.IncorrectISBNGiven);
             }
 
-            if (string.IsNullOrWhiteSpace(book.GenreName))
+            if (book.Genre is null)
             {
                 return Result<Book>.Failure(BookErrors.GenreNameMissing);
             }
 
-            return Result<Book>.Success(new Book(book));
+            return Result<Book>.Success(
+                new Book(book.Title,
+                    book.TitlePageImageUrl,
+                    book.ReleaseDate,
+                    book.Description,
+                    book.ISBN,
+                    book.Publisher,
+                    book.Genre)
+            );
         }
     }
 }

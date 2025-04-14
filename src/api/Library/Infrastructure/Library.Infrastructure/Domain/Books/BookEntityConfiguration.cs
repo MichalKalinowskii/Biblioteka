@@ -31,10 +31,11 @@ namespace Library.Infrastructure.Domain.Books
 
             builder.Property(b => b.Publisher);
 
-            builder.HasOne(b => b.Genre)
-                .WithMany()
-                .HasForeignKey("Book_GenreId")
-                .IsRequired();
+            builder.Property(x => x.Genre)
+                .IsRequired()
+                .HasConversion(
+                    v => v.Id,
+                    v => Genre.FromValue(v));
         }
     }
 }
