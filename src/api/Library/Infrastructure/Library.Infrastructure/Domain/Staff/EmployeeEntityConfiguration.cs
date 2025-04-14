@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Library.Infrastructure.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Library.Domain.Staff;
 
@@ -12,6 +13,9 @@ public class EmployeeEntityConfiguration : IEntityTypeConfiguration<Employee>
         
         builder.HasKey(x => x.Id);
         
-        builder.Property(x => x.Id).IsRequired();
+        builder.HasOne<ApplicationUser>()
+            .WithOne()
+            .HasForeignKey<Employee>(x => x.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

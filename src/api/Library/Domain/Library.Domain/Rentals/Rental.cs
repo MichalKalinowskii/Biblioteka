@@ -29,8 +29,37 @@ public class Rental
         ReturnDate = returnDate;
         Status = RentalStatus.InProgress;
     }
+
+    public static Result<Rental> Create(Guid libraryCardId, int employeeId, List<int> bookCopyIds, DateTime returnDate)
+    {
+        if (libraryCardId == default)
+        {
+            return Result<Rental>.Failure(RentalErrors.InvalidLibraryCard());
+        }
+
+        if (employeeId == default)
+        {
+            return Result<Rental>.Failure(RentalErrors.InvalidEmployee());
+        }
+        
+        if (!(returnDate >= DateTime.UtcNow))
+        {
+            return Result<Rental>.Failure(RentalErrors.ReturnDateShouldBePlacedInFuture());
+        }
+        
+        Rental rental = new Rental(libraryCardId, employeeId, returnDate);
+        
+        var result = rental.RentBooks(bookCopyIds, returnDate);
+
+        if (result.IsFailure)
+        {
+            return Result<Rental>.Failure(result.Error);
+        }
+        
+        return Result<Rental>.Success(rental);
+    }
     
-    internal Result RentBooks(List<int> bookCopyIds, DateTime returnDate)
+    private Result RentBooks(List<int> bookCopyIds, DateTime returnDate)
     {
         if (!bookCopyIds.Any())
         {
