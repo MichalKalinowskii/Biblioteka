@@ -26,12 +26,12 @@ public class RentalService
         
         Result<Rental> result = Rental.Create(libraryCardId, employeeId, bookCopyIds, returnDate);
 
-        if (result.IsFailure || result.Value == null)
+        if (result.IsFailure)
         {
             return Result<Rental>.Failure(result.Error);
         }
         
-        await _rentalRepository.AddAsync(result.Value, cancellationToken);
+        await _rentalRepository.AddAsync(result.Value!, cancellationToken);
         await _unitOfWork.CommitAsync(cancellationToken);
 
         return result;

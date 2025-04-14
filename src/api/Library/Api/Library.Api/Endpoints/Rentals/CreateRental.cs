@@ -8,7 +8,7 @@ public class CreateRental : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("", async ([FromBody] CreateRentalDto createRentalDto, RentalService rentalService, CancellationToken cancellationToken) =>
+        app.MapPost("rentals", async ([FromBody] CreateRentalDto createRentalDto, RentalService rentalService, CancellationToken cancellationToken) =>
             {
                 var result = await rentalService.CreateRentalAsync(createRentalDto.LibraryCardId, createRentalDto.EmployeeId, createRentalDto.BookCopyIds, createRentalDto.ReturnDate, cancellationToken);
 

@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Library.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    [Migration("20250410104119_Initial")]
+    [Migration("20250414185532_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -24,6 +24,28 @@ namespace Library.Infrastructure.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("Library.Domain.Clients.Client", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("LibraryCardId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Clients");
+                });
 
             modelBuilder.Entity("Library.Domain.Rentals.BookRental", b =>
                 {
@@ -92,6 +114,9 @@ namespace Library.Infrastructure.Data.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Employees", (string)null);
                 });
@@ -299,6 +324,15 @@ namespace Library.Infrastructure.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Library.Domain.Clients.Client", b =>
+                {
+                    b.HasOne("Library.Infrastructure.Authentication.ApplicationUser", null)
+                        .WithOne()
+                        .HasForeignKey("Library.Domain.Clients.Client", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Library.Domain.Rentals.BookRental", b =>
                 {
                     b.HasOne("Library.Domain.Rentals.Rental", null)
@@ -316,6 +350,15 @@ namespace Library.Infrastructure.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_Rental_Employee");
+                });
+
+            modelBuilder.Entity("Library.Domain.Staff.Employee", b =>
+                {
+                    b.HasOne("Library.Infrastructure.Authentication.ApplicationUser", null)
+                        .WithOne()
+                        .HasForeignKey("Library.Domain.Staff.Employee", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
