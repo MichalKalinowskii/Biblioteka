@@ -25,5 +25,10 @@ namespace Library.Infrastructure.Domain.BookCopies
         {
             throw new NotImplementedException();
         }
+
+        public Task<BookCopy> GetBookCopyByIdAsync(Guid bookId, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

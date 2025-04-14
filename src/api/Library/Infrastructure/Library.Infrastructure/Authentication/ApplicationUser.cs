@@ -1,3 +1,4 @@
+using Library.Domain.Clients;
 using Microsoft.AspNetCore.Identity;
 
 namespace Library.Infrastructure.Authentication;

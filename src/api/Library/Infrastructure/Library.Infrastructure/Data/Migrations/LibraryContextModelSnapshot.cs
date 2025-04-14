@@ -22,6 +22,28 @@ namespace Library.Infrastructure.Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Library.Domain.Clients.Client", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("LibraryCardId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Clients");
+                });
+
             modelBuilder.Entity("Library.Domain.Rentals.BookRental", b =>
                 {
                     b.Property<int>("Id")
@@ -66,6 +88,9 @@ namespace Library.Infrastructure.Data.Migrations
                     b.Property<DateTime>("ReturnDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("EmployeeId")
@@ -86,6 +111,9 @@ namespace Library.Infrastructure.Data.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Employees", (string)null);
                 });
@@ -293,14 +321,22 @@ namespace Library.Infrastructure.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Library.Domain.Clients.Client", b =>
+                {
+                    b.HasOne("Library.Infrastructure.Authentication.ApplicationUser", null)
+                        .WithOne()
+                        .HasForeignKey("Library.Domain.Clients.Client", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Library.Domain.Rentals.BookRental", b =>
                 {
                     b.HasOne("Library.Domain.Rentals.Rental", null)
-                        .WithMany()
+                        .WithMany("BookRentals")
                         .HasForeignKey("RentalId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_BookRental_Rentals");
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Library.Domain.Rentals.Rental", b =>
@@ -311,6 +347,15 @@ namespace Library.Infrastructure.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_Rental_Employee");
+                });
+
+            modelBuilder.Entity("Library.Domain.Staff.Employee", b =>
+                {
+                    b.HasOne("Library.Infrastructure.Authentication.ApplicationUser", null)
+                        .WithOne()
+                        .HasForeignKey("Library.Domain.Staff.Employee", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -362,6 +407,11 @@ namespace Library.Infrastructure.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Library.Domain.Rentals.Rental", b =>
+                {
+                    b.Navigation("BookRentals");
                 });
 #pragma warning restore 612, 618
         }

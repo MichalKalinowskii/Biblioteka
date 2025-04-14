@@ -1,7 +1,7 @@
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore;
 using Library.Domain.Rentals;
 using Library.Domain.Staff;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Library.Infrastructure.Domain.Rentals;
 
@@ -25,6 +25,10 @@ public class RentalEntityConfiguration : IEntityTypeConfiguration<Rental>
         builder.Property(x => x.LibraryCardId)
             .IsRequired();
 
+        var bookRentalsConfiguration = builder.Navigation(x => x.BookRentals);
+
+        bookRentalsConfiguration.Metadata.SetField("_bookRentals");
+        
         builder.HasOne<Employee>()
             .WithOne()
             .HasForeignKey<Rental>(x => x.EmployeeId)
