@@ -27,5 +27,18 @@ namespace Library.Domain.BookCopies.Models
         {
             return Name;
         }
+
+        public static BookCopyStatus FromValue(int value)
+        {
+            return value switch
+            {
+                1 => Available,
+                2 => Reserved,
+                3 => Lost,
+                4 => Damaged,
+                5 => Unavailable,
+                _ => throw new ArgumentException("Invalid status value")
+            };
+        }
     }
 }

@@ -12,10 +12,10 @@ namespace Library.Domain.BookCopies.Interfaces
     {
         Task<Result> AddBookCopyAsync(BookCopy book, CancellationToken cancellationToken);
 
-        Task<Result> UpdateBookCopyAsync(BookCopy book, CancellationToken cancellationToken);
+        Result UpdateBookCopy(BookCopy book, CancellationToken cancellationToken);
 
         Task<Result<List<Guid>>> IsAnyNonExistingBookCopyInGivenListAsync(List<Guid> bookIds, CancellationToken cancellationToken);
 
-        Task<BookCopy> GetBookCopyByIdAsync(Guid bookId, CancellationToken cancellationToken);
+        Task<Result<BookCopy>> GetBookCopyByIdAsync(Guid bookId, CancellationToken cancellationToken);
     }
 }

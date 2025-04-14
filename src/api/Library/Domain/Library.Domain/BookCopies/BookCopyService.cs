@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Library.Domain.BookCopies
 {
-    internal class BookCopyService
+    public class BookCopyService
     {
         private readonly IBookCopyPersistance bookCopyPersistance;
         private readonly IUnitOfWork unitOfWork;
@@ -48,13 +48,19 @@ namespace Library.Domain.BookCopies
             CancellationToken cancellationToken)
         {
             var bookCopy = await bookCopyPersistance.GetBookCopyByIdAsync(bookCopyId, cancellationToken);
-            if (bookCopy is null)
+
+            if (bookCopy.IsFailure)
+            {
+                return Result.Failure(bookCopy.Error);
+            }
+
+            if (bookCopy.Value is null)
             {
                 return Result.Failure(BookCopyErrors.BookCopyNotFound);
             }
 
-            bookCopy.ChangeStatus(newStatus);
-            var updateResult = await bookCopyPersistance.UpdateBookCopyAsync(bookCopy, cancellationToken);
+            bookCopy.Value.ChangeStatus(newStatus);
+            var updateResult = bookCopyPersistance.UpdateBookCopy(bookCopy.Value, cancellationToken);
 
             if (updateResult.IsFailure)
             {
@@ -82,18 +88,26 @@ namespace Library.Domain.BookCopies
             CancellationToken cancellationToken)
         {
             var bookCopy = await bookCopyPersistance.GetBookCopyByIdAsync(bookId, cancellationToken);
-            if (bookCopy is null)
+
+            if (bookCopy.IsFailure)
+            {
+                return Result.Failure(bookCopy.Error);
+            }
+
+            if (bookCopy.Value is null)
             {
                 return Result.Failure(BookCopyErrors.BookCopyNotFound);
             }
-            var result = bookCopy.ChangeLocation(locationId);
+
+            var result = bookCopy.Value.ChangeLocation(locationId);
 
             if (result.IsFailure)
             {
                 return Result.Failure(result.Error);
             }
 
-            var updateResult = await bookCopyPersistance.UpdateBookCopyAsync(bookCopy, cancellationToken);
+            var updateResult = bookCopyPersistance.UpdateBookCopy(bookCopy.Value, cancellationToken);
+            
             if (updateResult.IsFailure)
             {
                 return Result.Failure(updateResult.Error);

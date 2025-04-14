@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Library.Domain.Books;
+using Library.Domain.BookCopies;
 
 namespace Library.Infrastructure;
 
@@ -29,23 +31,25 @@ public static class Registration
             .AddEntityFrameworkStores<LibraryContext>()
             .AddDefaultTokenProviders();
 
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
-        services.AddScoped<IBookPersistence, BookRepository>();
-        services.AddScoped<IBookCopyPersistance, BookCopyRepository>();
-
         services.AddJwtAuthentication(configuration);
         services.AddRepositories();
         services.AddDomainServices();
+
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
     }
 
     private static void AddDomainServices(this IServiceCollection services)
     {
         services.AddScoped<RentalService>();
+        services.AddScoped<BookCopyService>();
+        services.AddScoped<BookService>();
     }
     
     private static void AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<IRentalRepository, RentalRepository>();
         services.AddScoped<IClientRepository, ClientRepository>();
+        services.AddScoped<IBookPersistence, BookRepository>();
+        services.AddScoped<IBookCopyPersistance, BookCopyRepository>();
     }
 }

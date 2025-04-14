@@ -33,9 +33,14 @@ namespace Library.Domain.Books
 
             var newBook = result.Value!;
 
-            var bookAlreadyExist = bookPersistence.GetBookByISBN(newBook.ISBN, cancellationToken) is not null;
-            
-            if (bookAlreadyExist)
+            var bookAlreadyExist = await bookPersistence.GetBookByISBN(newBook.ISBN, cancellationToken);
+
+            if (bookAlreadyExist.IsFailure)
+            {
+                return Result.Failure(bookAlreadyExist.Error);
+            }
+
+            if (bookAlreadyExist.Value is not null)
             {
                 return Result.Failure(BookErrors.BookAlreadyExists);
             }
@@ -54,16 +59,23 @@ namespace Library.Domain.Books
 
         public async Task<Result> ChangeBookGenreAsync(string ISBN, string newGenreName, CancellationToken cancellationToken)
         {
-            var book = await bookPersistence.GetBookByISBN(ISBN, cancellationToken);
+            var bookISBN = await bookPersistence.GetBookByISBN(ISBN, cancellationToken);
             
-            if (book is null)
+            if (bookISBN.IsFailure)
+            {
+                return Result.Failure(bookISBN.Error);
+            }
+
+            if (bookISBN.Value is null)
             {
                 return Result.Failure(BookErrors.BookNotFound);
             }
 
+            var book = bookISBN.Value!;
+
             book.ChangeGenre(newGenreName);
 
-            var updateBookResult = await bookPersistence.UpdateBookAsync(book, cancellationToken);
+            var updateBookResult = bookPersistence.UpdateBook(book, cancellationToken);
             if (updateBookResult.IsFailure)
             {
                 return Result.Failure(updateBookResult.Error);
