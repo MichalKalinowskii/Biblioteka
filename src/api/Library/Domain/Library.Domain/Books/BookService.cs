@@ -86,5 +86,18 @@ namespace Library.Domain.Books
             return Result.Success();
         }
 
+        public async Task<Result<Book>> GetBookByISBN(string ISBN, CancellationToken cancellationToken)
+        {
+            var book = await bookPersistence.GetBookByISBN(ISBN, cancellationToken);
+            if (book.IsFailure)
+            {
+                return Result<Book>.Failure(book.Error);
+            }
+            if (book.Value is null)
+            {
+                return Result<Book>.Failure(BookErrors.BookNotFound);
+            }
+            return Result<Book>.Success(book.Value);
+        }
     }
 }
