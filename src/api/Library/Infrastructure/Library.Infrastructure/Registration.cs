@@ -1,8 +1,10 @@
+using Library.Domain.Clients;
 using Library.Domain.Rentals;
 using Library.Domain.SeedWork;
 using Library.Infrastructure.Authentication;
 using Library.Infrastructure.Data;
 using Library.Infrastructure.Domain;
+using Library.Infrastructure.Domain.Clients;
 using Library.Infrastructure.Domain.Rentals;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -38,5 +40,6 @@ public static class Registration
     private static void AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<IRentalRepository, RentalRepository>();
+        services.AddScoped<IClientRepository, ClientRepository>();
     }
 }
