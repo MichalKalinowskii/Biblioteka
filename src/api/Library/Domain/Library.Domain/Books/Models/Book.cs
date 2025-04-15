@@ -1,5 +1,4 @@
-using Library.Domain.Books.Entites;
-using Library.Domain.Books.Interfaces;
+using Library.Domain.Books.Errors;
 using Library.Domain.SeedWork;
 
 namespace Library.Domain.Books.Models;
@@ -28,8 +27,13 @@ public class Book
         Publisher = publisher;
     }
 
-    public void ChangeGenre(Genre newGenre)
+    public Result ChangeGenre(Genre newGenre)
     {
-        Genre = newGenre;
+        if (newGenre is null)
+        {
+            return Result.Failure(BookErrors.GenreMissing);
+        }
+
+        return Result.Success();
     }
 }
