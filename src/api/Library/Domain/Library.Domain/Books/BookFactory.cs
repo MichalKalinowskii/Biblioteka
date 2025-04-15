@@ -49,7 +49,7 @@ namespace Library.Domain.Books
 
             if (book.Genre is null)
             {
-                return Result<Book>.Failure(BookErrors.GenreNameMissing);
+                return Result<Book>.Failure(BookErrors.GenreMissing);
             }
 
             return Result<Book>.Success(
