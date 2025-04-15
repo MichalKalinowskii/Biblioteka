@@ -232,8 +232,7 @@ namespace Library.Infrastructure.Data
         private async Task<List<Rental>> AddRentals(List<Employee> employees, List<Client> clients, List<BookCopy> bookCopies)
         {
             List<Rental> rentals = new List<Rental>();
-
-
+            
             var rental = Rental.Create(clients[0].LibraryCardId, employees[0].Id, new List<Guid>
             {
                 bookCopies[0].Id,

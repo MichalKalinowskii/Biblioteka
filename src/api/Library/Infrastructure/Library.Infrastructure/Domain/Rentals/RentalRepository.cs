@@ -17,4 +17,11 @@ public class RentalRepository : IRentalRepository
     {
         await _rentals.AddAsync(rental, cancellationToken);
     }
+
+    public Task<List<Rental>> GetAsync(CancellationToken cancellationToken)
+    {
+        return _rentals
+            .Include(x => x.BookRentals)
+            .ToListAsync(cancellationToken);
+    }
 }

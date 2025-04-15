@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Library.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    [Migration("20250415101127_Initial")]
+    [Migration("20250415205527_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -197,7 +197,7 @@ namespace Library.Infrastructure.Data.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Clients");
+                    b.ToTable("Clients", (string)null);
                 });
 
             modelBuilder.Entity("Library.Domain.Rentals.BookRental", b =>
@@ -216,6 +216,9 @@ namespace Library.Infrastructure.Data.Migrations
 
                     b.Property<DateTime>("ReturnDate")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -249,8 +252,7 @@ namespace Library.Infrastructure.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmployeeId")
-                        .IsUnique();
+                    b.HasIndex("EmployeeId");
 
                     b.ToTable("Rentals", (string)null);
                 });
@@ -500,15 +502,15 @@ namespace Library.Infrastructure.Data.Migrations
                     b.HasOne("Library.Domain.Rentals.Rental", null)
                         .WithMany("BookRentals")
                         .HasForeignKey("RentalId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("Library.Domain.Rentals.Rental", b =>
                 {
                     b.HasOne("Library.Domain.Staff.Employee", null)
-                        .WithOne()
-                        .HasForeignKey("Library.Domain.Rentals.Rental", "EmployeeId")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_Rental_Employee");

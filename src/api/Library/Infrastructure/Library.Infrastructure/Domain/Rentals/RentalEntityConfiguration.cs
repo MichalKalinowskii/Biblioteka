@@ -30,8 +30,8 @@ public class RentalEntityConfiguration : IEntityTypeConfiguration<Rental>
         //bookRentalsConfiguration.Metadata.SetField("_bookRentals");
         
         builder.HasOne<Employee>()
-            .WithOne()
-            .HasForeignKey<Rental>(x => x.EmployeeId)
+            .WithMany()
+            .HasForeignKey(x => x.EmployeeId)
             .HasConstraintName("FK_Rental_Employee")
             .OnDelete(DeleteBehavior.Cascade);
     }

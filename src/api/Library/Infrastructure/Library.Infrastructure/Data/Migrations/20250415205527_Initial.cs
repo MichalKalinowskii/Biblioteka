@@ -295,7 +295,8 @@ namespace Library.Infrastructure.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     RentalId = table.Column<int>(type: "integer", nullable: false),
                     BookCopyId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ReturnDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    ReturnDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -305,7 +306,7 @@ namespace Library.Infrastructure.Data.Migrations
                         column: x => x.RentalId,
                         principalTable: "Rentals",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
@@ -395,8 +396,7 @@ namespace Library.Infrastructure.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Rentals_EmployeeId",
                 table: "Rentals",
-                column: "EmployeeId",
-                unique: true);
+                column: "EmployeeId");
         }
 
         /// <inheritdoc />
