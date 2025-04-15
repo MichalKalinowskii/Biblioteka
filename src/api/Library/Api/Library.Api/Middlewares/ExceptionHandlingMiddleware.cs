@@ -26,6 +26,7 @@ public class ExceptionHandlingMiddleware
             var problemDetails = new ProblemDetails
             {
                 Status = StatusCodes.Status500InternalServerError,
+                Detail = e.Message,
                 Title = "Server Error",
                 Type = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/500",
             };

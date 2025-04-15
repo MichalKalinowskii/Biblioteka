@@ -21,11 +21,11 @@ app.MapEndpoints();
 if (app.Environment.IsDevelopment())
 {
     DataSeeder dataSeeder = new DataSeeder(app.Services);
-
     await dataSeeder.SeedDataAsync();
-    app.MapOpenApi();
-    app.MapScalarApiReference();
 }
+
+app.MapOpenApi();
+app.MapScalarApiReference();
 
 app.UseHttpsRedirection();
 
