@@ -16,7 +16,7 @@ public class RentalService
         _clientRepository = clientRepository;
     }
     
-    public async Task<Result<Rental>> CreateRentalAsync(Guid libraryCardId, int employeeId, List<int> bookCopyIds, DateTime returnDate, CancellationToken cancellationToken)
+    public async Task<Result<Rental>> CreateRentalAsync(Guid libraryCardId, int employeeId, List<Guid> bookCopyIds, DateTime returnDate, CancellationToken cancellationToken)
     {
         if (!await _clientRepository.LibraryCardExistsAsync(libraryCardId))
         {

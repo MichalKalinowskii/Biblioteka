@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Library.Domain.Books.Models;
 
 namespace Library.Domain.BookCopies
 {
@@ -21,7 +22,7 @@ namespace Library.Domain.BookCopies
             this.unitOfWork = unitOfWork;
         }
 
-        public async Task<Result> AddNewBookCopyAsync(Guid BookId,
+        public async Task<Result<BookCopy>> AddNewBookCopyAsync(Guid BookId,
             Guid LocationId,
             BookCopyStatus Status,
             CancellationToken cancellationToken)
@@ -30,17 +31,17 @@ namespace Library.Domain.BookCopies
 
             if (bookCopy.IsFailure)
             {
-                return Result.Failure(bookCopy.Error);
+                return Result<BookCopy>.Failure(bookCopy.Error);
             }
 
             var addBookCopyResult = await bookCopyPersistance.AddBookCopyAsync(bookCopy.Value!, cancellationToken);
             if (addBookCopyResult.IsFailure)
             {
-                return Result.Failure(addBookCopyResult.Error);
+                return Result<BookCopy>.Failure(addBookCopyResult.Error);
             }
 
             await unitOfWork.CommitAsync(cancellationToken);
-            return Result.Success();
+            return Result<BookCopy>.Success(bookCopy.Value!);
         }
 
         public async Task<Result> ChangeBookCopyStatusAsync(Guid bookCopyId,

@@ -205,8 +205,8 @@ namespace Library.Infrastructure.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("BookCopyId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("BookCopyId")
+                        .HasColumnType("uuid");
 
                     b.Property<int>("RentalId")
                         .HasColumnType("integer");

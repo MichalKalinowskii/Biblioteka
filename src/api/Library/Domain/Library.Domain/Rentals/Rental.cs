@@ -16,13 +16,11 @@ public class Rental
 
     public RentalStatus Status { get; private set; }
     
-    public IReadOnlyCollection<BookRental> BookRentals => _bookRentals.AsReadOnly();
-    
-    private readonly List<BookRental> _bookRentals;
+    public List<BookRental> BookRentals {get; private set;}
     
     internal Rental(Guid libraryCardId, int employeeId, DateTime returnDate)
     {
-        _bookRentals = new List<BookRental>();
+        BookRentals = new List<BookRental>();
         LibraryCardId = libraryCardId;
         EmployeeId = employeeId;
         RentalDate = DateTime.UtcNow;
@@ -30,7 +28,7 @@ public class Rental
         Status = RentalStatus.InProgress;
     }
 
-    public static Result<Rental> Create(Guid libraryCardId, int employeeId, List<int> bookCopyIds, DateTime returnDate)
+    public static Result<Rental> Create(Guid libraryCardId, int employeeId, List<Guid> bookCopyIds, DateTime returnDate)
     {
         if (libraryCardId == default)
         {
@@ -59,7 +57,7 @@ public class Rental
         return Result<Rental>.Success(rental);
     }
     
-    private Result RentBooks(List<int> bookCopyIds, DateTime returnDate)
+    private Result RentBooks(List<Guid> bookCopyIds, DateTime returnDate)
     {
         if (!bookCopyIds.Any())
         {
@@ -68,13 +66,13 @@ public class Rental
 
         foreach (var bookCopyId in bookCopyIds)
         {
-            _bookRentals.Add(new BookRental(bookCopyId, returnDate));
+            BookRentals.Add(new BookRental(bookCopyId, returnDate));
         }
         
         return Result.Success();
     }
 
-    internal Result ReturnBooks(List<int> bookCopyIds)
+    internal Result ReturnBooks(List<Guid> bookCopyIds)
     {
         if (Status == RentalStatus.Returned)
         {
@@ -86,14 +84,14 @@ public class Rental
             return Result.Failure(RentalErrors.EmptyBookList());
         }
 
-        if (_bookRentals.Any(bookRental => !bookCopyIds.Contains(bookRental.BookCopyId)))
+        if (BookRentals.Any(bookRental => !bookCopyIds.Contains(bookRental.BookCopyId)))
         {
             return Result.Failure(RentalErrors.NotBorrowedBook());
         }
 
         foreach (var bookCopyId in bookCopyIds)
         {
-            BookRental bookRental = _bookRentals.First(bookRental => bookRental.BookCopyId == bookCopyId);
+            BookRental bookRental = BookRentals.First(bookRental => bookRental.BookCopyId == bookCopyId);
             
             bookRental.ReturnBook();
         }
@@ -108,6 +106,6 @@ public class Rental
 
     private bool AllBooksReturned()
     {
-        return _bookRentals.All(bookRental => bookRental.Returned());
+        return BookRentals.All(bookRental => bookRental.Returned());
     }
 }
