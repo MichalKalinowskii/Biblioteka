@@ -1,3 +1,5 @@
+using Library.Domain.SeedWork;
+
 namespace Library.Domain.Staff;
 
 public class Employee
@@ -9,5 +11,10 @@ public class Employee
     internal Employee(Guid userId)
     {
         UserId = userId;
+    }
+
+    public static Result<Employee> Create(Guid userId)
+    {
+        return Result<Employee>.Success(new Employee(userId));
     }
 }

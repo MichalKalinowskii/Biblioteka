@@ -16,9 +16,11 @@ public class BookRentalEntityConfiguration : IEntityTypeConfiguration<BookRental
         
         builder.Property(x => x.BookCopyId).IsRequired();
         
+        builder.Property(x => x.Status).IsRequired();
+        
         builder.HasOne<Rental>()
             .WithMany(x => x.BookRentals)
             .HasForeignKey(x => x.RentalId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

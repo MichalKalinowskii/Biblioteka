@@ -6,13 +6,13 @@ public class BookRental
     
     public int RentalId { get; private set; }
     
-    public int BookCopyId { get; private set; }
+    public Guid BookCopyId { get; private set; }
     
     public DateTime ReturnDate { get; private set; }
 
-    private BookRentalStatus Status;
+    public BookRentalStatus Status { get; private set; }
 
-    internal BookRental(int bookCopyId, DateTime returnDate)
+    internal BookRental(Guid bookCopyId, DateTime returnDate)
     {
         BookCopyId = bookCopyId;
         ReturnDate = returnDate;

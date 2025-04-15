@@ -9,6 +9,8 @@ public class ClientEntityConfiguration : IEntityTypeConfiguration<Client>
 {
     public void Configure(EntityTypeBuilder<Client> builder)
     {
+        builder.ToTable("Clients");
+        
         builder.HasKey(x => x.Id);
         
         builder.Property(x => x.LibraryCardId).IsRequired();

@@ -1,3 +1,3 @@
 namespace Library.Application.Rentals;
 
-public record CreateRentalDto(Guid LibraryCardId, int EmployeeId, List<int> BookCopyIds, DateTime ReturnDate);
+public record CreateRentalDto(Guid LibraryCardId, int EmployeeId, List<Guid> BookCopyIds, DateTime ReturnDate);

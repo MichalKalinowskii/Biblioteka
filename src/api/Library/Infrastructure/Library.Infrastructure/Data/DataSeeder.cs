@@ -8,6 +8,9 @@ using Library.Domain.BookCopies;
 using Library.Domain.Books.Models;
 using Library.Domain.Books.Entites;
 using Library.Domain.BookCopies.Models;
+using Library.Domain.Clients;
+using Library.Domain.Rentals;
+using Library.Domain.Staff;
 
 namespace Library.Infrastructure.Data
 {
@@ -16,8 +19,8 @@ namespace Library.Infrastructure.Data
         private LibraryContext _dbContext;
         private PasswordHasher<ApplicationUser> _passwordHasher;
         private UserManager<ApplicationUser> _userManager;
-        private BookService bookService;
-        private BookCopyService bookCopyService;
+        private BookService _bookService;
+        private BookCopyService _bookCopyService;
 
         public async Task SeedDataAsync()
         {
@@ -25,8 +28,8 @@ namespace Library.Infrastructure.Data
             _dbContext = scope.ServiceProvider.GetRequiredService<LibraryContext>();
             _passwordHasher = new PasswordHasher<ApplicationUser>();
             _userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-            bookService =  scope.ServiceProvider.GetRequiredService<BookService>();
-            bookCopyService = scope.ServiceProvider.GetRequiredService<BookCopyService>();
+            _bookService =  scope.ServiceProvider.GetRequiredService<BookService>();
+            _bookCopyService = scope.ServiceProvider.GetRequiredService<BookCopyService>();
 
             await SeedData();
         }
@@ -41,8 +44,14 @@ namespace Library.Infrastructure.Data
 
             await AddBooks();
 
-            await AddBookCopies();
+            var bookCopies = await AddBookCopies();
 
+            var employees = await AddEmployees(applicationUsers);
+            
+            var clients = await AddClients(applicationUsers);
+
+            var rentals = await AddRentals(employees, clients, bookCopies);
+            
             await _dbContext.SaveChangesAsync();
         }
 
@@ -60,7 +69,7 @@ namespace Library.Infrastructure.Data
                 FirstName = "Test",
                 LastName = "User",
                 NormalizedEmail = userEmail.ToUpper(),
-                UserName = "testuser@example.com",
+                UserName = "testuser1@example.com",
                 PasswordHash = _passwordHasher.HashPassword(default, userPassword)
             });
             
@@ -74,7 +83,7 @@ namespace Library.Infrastructure.Data
                 FirstName = "Test",
                 LastName = "User",
                 NormalizedEmail = user2Email.ToUpper(),
-                UserName = "testuser@example.com",
+                UserName = "testuser2@example.com",
                 PasswordHash = _passwordHasher.HashPassword(default, user2Password)
             });
             
@@ -88,14 +97,14 @@ namespace Library.Infrastructure.Data
                 FirstName = "Test",
                 LastName = "User",
                 NormalizedEmail = user3Email.ToUpper(),
-                UserName = "testuser@example.com",
+                UserName = "testuser3@example.com",
                 PasswordHash = _passwordHasher.HashPassword(default, user3Password)
             });
 
             await _userManager.CreateAsync(applicationUsers[0]);
             await _userManager.CreateAsync(applicationUsers[1]);
             await _userManager.CreateAsync(applicationUsers[2]);
-
+            
             return applicationUsers;
         }
 
@@ -112,7 +121,7 @@ namespace Library.Infrastructure.Data
                 Publisher = "PAKA",
             };
 
-            await bookService.AddNewBookAsync(book1, new CancellationToken());
+            await _bookService.AddNewBookAsync(book1, new CancellationToken());
 
             var book2 = new BookEntity
             {
@@ -125,7 +134,7 @@ namespace Library.Infrastructure.Data
                 Publisher = "PAKA",
             };
 
-            await bookService.AddNewBookAsync(book2, new CancellationToken());
+            await _bookService.AddNewBookAsync(book2, new CancellationToken());
 
             var book3 = new BookEntity
             {
@@ -138,43 +147,112 @@ namespace Library.Infrastructure.Data
                 Publisher = "PAKA",
             };
 
-            await bookService.AddNewBookAsync(book3, new CancellationToken());
+            await _bookService.AddNewBookAsync(book3, new CancellationToken());
         }
 
-        private async Task AddBookCopies()
+        private async Task<List<BookCopy>> AddBookCopies()
         {
-            var book = await bookService.GetBookByISBN("1234567890123", new CancellationToken());
+            List<BookCopy> bookCopies = new List<BookCopy>();
+            
+            var book = await _bookService.GetBookByISBN("1234567890123", new CancellationToken());
 
-            await bookCopyService.AddNewBookCopyAsync(book.Value.Id, Guid.NewGuid(),
+            var bookCopy1 =  await _bookCopyService.AddNewBookCopyAsync(book.Value.Id, Guid.NewGuid(),
                 BookCopyStatus.Available, new CancellationToken());
 
-            await bookCopyService.AddNewBookCopyAsync(book.Value.Id, Guid.NewGuid(),
+            var bookCopy2 = await _bookCopyService.AddNewBookCopyAsync(book.Value.Id, Guid.NewGuid(),
                 BookCopyStatus.Damaged, new CancellationToken());
 
-            await bookCopyService.AddNewBookCopyAsync(book.Value.Id, Guid.NewGuid(),
+            var bookCopy3 = await _bookCopyService.AddNewBookCopyAsync(book.Value.Id, Guid.NewGuid(),
                 BookCopyStatus.Reserved, new CancellationToken());
+            
+            bookCopies.Add(bookCopy1.Value);
+            bookCopies.Add(bookCopy2.Value);
+            bookCopies.Add(bookCopy3.Value);
 
-            var book2 = await bookService.GetBookByISBN("1234567890124", new CancellationToken());
+            var book2 = await _bookService.GetBookByISBN("1234567890124", new CancellationToken());
 
-            await bookCopyService.AddNewBookCopyAsync(book2.Value.Id, Guid.NewGuid(),
+            var bookCopy4 = await _bookCopyService.AddNewBookCopyAsync(book2.Value.Id, Guid.NewGuid(),
                 BookCopyStatus.Available, new CancellationToken());
 
-            await bookCopyService.AddNewBookCopyAsync(book2.Value.Id, Guid.NewGuid(),
+            var bookCopy5 = await _bookCopyService.AddNewBookCopyAsync(book2.Value.Id, Guid.NewGuid(),
                 BookCopyStatus.Available, new CancellationToken());
 
-            await bookCopyService.AddNewBookCopyAsync(book2.Value.Id, Guid.NewGuid(),
+            var bookCopy6 = await _bookCopyService.AddNewBookCopyAsync(book2.Value.Id, Guid.NewGuid(),
                 BookCopyStatus.Lost, new CancellationToken());
+            
+            bookCopies.Add(bookCopy4.Value);
+            bookCopies.Add(bookCopy5.Value);
+            bookCopies.Add(bookCopy6.Value);
 
-            var book3 = await bookService.GetBookByISBN("1234567890125", new CancellationToken());
+            var book3 = await _bookService.GetBookByISBN("1234567890125", new CancellationToken());
 
-            await bookCopyService.AddNewBookCopyAsync(book3.Value.Id, Guid.NewGuid(),
+            var bookCopy7 = await _bookCopyService.AddNewBookCopyAsync(book3.Value.Id, Guid.NewGuid(),
                 BookCopyStatus.Available, new CancellationToken());
 
-            await bookCopyService.AddNewBookCopyAsync(book3.Value.Id, Guid.NewGuid(),
+            var bookCopy8 = await _bookCopyService.AddNewBookCopyAsync(book3.Value.Id, Guid.NewGuid(),
                 BookCopyStatus.Available, new CancellationToken());
 
-            await bookCopyService.AddNewBookCopyAsync(book3.Value.Id, Guid.NewGuid(),
+            var bookCopy9 = await _bookCopyService.AddNewBookCopyAsync(book3.Value.Id, Guid.NewGuid(),
                 BookCopyStatus.Unavailable, new CancellationToken());
+            
+            bookCopies.Add(bookCopy7.Value);
+            bookCopies.Add(bookCopy8.Value);
+            bookCopies.Add(bookCopy9.Value);
+            
+            return bookCopies;
+        }
+
+        private async Task<List<Employee>> AddEmployees(List<ApplicationUser> applicationUsers)
+        {
+            List<Employee> employees = new List<Employee>();
+            
+            employees.Add(Employee.Create(applicationUsers[0].Id).Value);
+            
+            await _dbContext.Set<Employee>().AddRangeAsync(employees);
+            
+            await _dbContext.SaveChangesAsync();
+            
+            return employees;
+        }
+
+        private async Task<List<Client>> AddClients(List<ApplicationUser> applicationUsers)
+        {
+            List<Client> clients = new List<Client>();
+            
+            clients.Add(Client.Create(applicationUsers[1].Id, Guid.NewGuid()).Value);
+            clients.Add(Client.Create(applicationUsers[2].Id, Guid.NewGuid()).Value);
+            
+            await _dbContext.Set<Client>().AddRangeAsync(clients);
+            
+            await _dbContext.SaveChangesAsync();
+            
+            return clients;
+        }
+
+        private async Task<List<Rental>> AddRentals(List<Employee> employees, List<Client> clients, List<BookCopy> bookCopies)
+        {
+            List<Rental> rentals = new List<Rental>();
+
+
+            var rental = Rental.Create(clients[0].LibraryCardId, employees[0].Id, new List<Guid>
+            {
+                bookCopies[0].Id,
+                bookCopies[3].Id
+            }, DateTime.UtcNow.AddDays(14));
+
+            rentals.Add(rental.Value);
+
+            rental = Rental.Create(clients[1].LibraryCardId, employees[0].Id, new List<Guid>
+            {
+                bookCopies[4].Id,
+                bookCopies[7].Id
+            }, DateTime.UtcNow.AddDays(14));
+            
+            rentals.Add(rental.Value);
+            
+            await _dbContext.Set<Rental>().AddRangeAsync(rentals);
+            
+            return rentals;
         }
     }
 }
