@@ -3,6 +3,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using Library.Infrastructure.Authentication;
 using Microsoft.AspNetCore.Identity;
+using Library.Domain.Books;
+using Library.Domain.BookCopies;
+using Library.Domain.Books.Models;
+using Library.Domain.Books.Entites;
+using Library.Domain.BookCopies.Models;
 
 namespace Library.Infrastructure.Data
 {
@@ -11,6 +16,8 @@ namespace Library.Infrastructure.Data
         private LibraryContext _dbContext;
         private PasswordHasher<ApplicationUser> _passwordHasher;
         private UserManager<ApplicationUser> _userManager;
+        private BookService bookService;
+        private BookCopyService bookCopyService;
 
         public async Task SeedDataAsync()
         {
@@ -18,6 +25,8 @@ namespace Library.Infrastructure.Data
             _dbContext = scope.ServiceProvider.GetRequiredService<LibraryContext>();
             _passwordHasher = new PasswordHasher<ApplicationUser>();
             _userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            bookService =  scope.ServiceProvider.GetRequiredService<BookService>();
+            bookCopyService = scope.ServiceProvider.GetRequiredService<BookCopyService>();
 
             await SeedData();
         }
@@ -29,8 +38,10 @@ namespace Library.Infrastructure.Data
             await _dbContext.Database.EnsureCreatedAsync();
 
             List<ApplicationUser> applicationUsers = await AddApplicationUsers();
-            
-            
+
+            await AddBooks();
+
+            await AddBookCopies();
 
             await _dbContext.SaveChangesAsync();
         }
@@ -86,6 +97,84 @@ namespace Library.Infrastructure.Data
             await _userManager.CreateAsync(applicationUsers[2]);
 
             return applicationUsers;
+        }
+
+        private async Task AddBooks()
+        {
+            var book1 = new BookEntity
+            {
+                Title = "Book 1",
+                TitlePageImageUrl = "https://example.com/book1.jpg",
+                Genre = Genre.Comedy,
+                ReleaseDate = DateTime.UtcNow,
+                Description = "Description of Book 1",
+                ISBN = "1234567890123",
+                Publisher = "PAKA",
+            };
+
+            await bookService.AddNewBookAsync(book1, new CancellationToken());
+
+            var book2 = new BookEntity
+            {
+                Title = "Book 2",
+                TitlePageImageUrl = "https://example.com/book2.jpg",
+                Genre = Genre.Horror,
+                ReleaseDate = DateTime.UtcNow,
+                Description = "Description of Book 2",
+                ISBN = "1234567890124",
+                Publisher = "PAKA",
+            };
+
+            await bookService.AddNewBookAsync(book2, new CancellationToken());
+
+            var book3 = new BookEntity
+            {
+                Title = "Book 3",
+                TitlePageImageUrl = "https://example.com/book3.jpg",
+                Genre = Genre.Romance,
+                ReleaseDate = DateTime.UtcNow,
+                Description = "Description of Book 3",
+                ISBN = "1234567890125",
+                Publisher = "PAKA",
+            };
+
+            await bookService.AddNewBookAsync(book3, new CancellationToken());
+        }
+
+        private async Task AddBookCopies()
+        {
+            var book = await bookService.GetBookByISBN("1234567890123", new CancellationToken());
+
+            await bookCopyService.AddNewBookCopyAsync(book.Value.Id, Guid.NewGuid(),
+                BookCopyStatus.Available, new CancellationToken());
+
+            await bookCopyService.AddNewBookCopyAsync(book.Value.Id, Guid.NewGuid(),
+                BookCopyStatus.Damaged, new CancellationToken());
+
+            await bookCopyService.AddNewBookCopyAsync(book.Value.Id, Guid.NewGuid(),
+                BookCopyStatus.Reserved, new CancellationToken());
+
+            var book2 = await bookService.GetBookByISBN("1234567890124", new CancellationToken());
+
+            await bookCopyService.AddNewBookCopyAsync(book2.Value.Id, Guid.NewGuid(),
+                BookCopyStatus.Available, new CancellationToken());
+
+            await bookCopyService.AddNewBookCopyAsync(book2.Value.Id, Guid.NewGuid(),
+                BookCopyStatus.Available, new CancellationToken());
+
+            await bookCopyService.AddNewBookCopyAsync(book2.Value.Id, Guid.NewGuid(),
+                BookCopyStatus.Lost, new CancellationToken());
+
+            var book3 = await bookService.GetBookByISBN("1234567890125", new CancellationToken());
+
+            await bookCopyService.AddNewBookCopyAsync(book3.Value.Id, Guid.NewGuid(),
+                BookCopyStatus.Available, new CancellationToken());
+
+            await bookCopyService.AddNewBookCopyAsync(book3.Value.Id, Guid.NewGuid(),
+                BookCopyStatus.Available, new CancellationToken());
+
+            await bookCopyService.AddNewBookCopyAsync(book3.Value.Id, Guid.NewGuid(),
+                BookCopyStatus.Unavailable, new CancellationToken());
         }
     }
 }
