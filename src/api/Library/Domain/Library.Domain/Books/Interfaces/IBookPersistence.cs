@@ -13,5 +13,7 @@ namespace Library.Domain.Books.Interfaces
         Task<Result<Book>> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 
         Result UpdateBook(Book book, CancellationToken cancellationToken);
+
+        Task<Result<List<Book>>> GetAllBooksByGenreId(int genreId, CancellationToken cancellationToken);
     }
 }

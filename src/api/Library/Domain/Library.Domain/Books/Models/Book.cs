@@ -8,8 +8,16 @@ public class Book
     public Guid Id { get; set; }
     public string Title { get; set; }
     public string TitlePageImageUrl { get; set; }
-    public DateTime ReleaseDate { get; set; }
-    public string Description { get; set; } = string.Empty;
+    private DateTime releaseDate;
+    public DateTime ReleaseDate { 
+        get { return releaseDate; } 
+        set { releaseDate = value.ToUniversalTime(); } 
+    }
+    private string description;
+    public string Description { 
+        get { return description; } 
+        set { description = value ?? string.Empty; } 
+    }
     public string ISBN { get; set; }
     public string Publisher { get; set; }
     public Genre Genre { get; set; }

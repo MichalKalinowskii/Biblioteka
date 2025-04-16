@@ -1,4 +1,3 @@
-using Library.Domain.Books.Entites;
 using Library.Domain.Books.Errors;
 using Library.Domain.Books.Interfaces;
 using Library.Domain.Books.Models;
@@ -29,6 +28,21 @@ public class BookRepository : IBookPersistence
             result =  Result.Failure(new Error("BookRepository.AddBookAsync", ex.Message));
         }
         return result;
+    }
+
+    public async Task<Result<List<Book>>> GetAllBooksByGenreId(int genreId, CancellationToken cancellationToken)
+    {
+        Result<List<Book>> result = default;
+        try
+        {
+            var books = await bookContext.Where(x => x.Genre.Id == genreId).ToListAsync(cancellationToken);
+            result = Result<List<Book>>.Success(books);
+        }
+        catch (Exception ex)
+        {
+            result = Result<List<Book>>.Failure(new Error("BookRepository.GetAllBooksByGenreId", ex.Message));
+        }
+        return result!;
     }
 
     public async Task<Result<Book>> GetBookByISBN(string ISBN, CancellationToken cancellationToken)

@@ -4,4 +4,6 @@ public static class Tags
 {
     public const string Authentication = "Authentication";
     public const string Rentals = "Rentals";
+    public const string Books = "Books";
+    public const string BookCopy = "BookCopy";
 }

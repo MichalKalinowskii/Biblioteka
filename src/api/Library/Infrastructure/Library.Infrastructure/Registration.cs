@@ -21,10 +21,19 @@ namespace Library.Infrastructure;
 
 public static class Registration
 {
-    public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration, bool isDevelopment)
     {
-        services.AddDbContext<LibraryContext>(options =>
-            options.UseNpgsql(Environment.GetEnvironmentVariable("POSTGRESQLCONNSTR_Database")));
+        if (isDevelopment)
+        {
+            var test = configuration.GetConnectionString("SqlDockerDevelopmentConnection");
+            services.AddDbContext<LibraryContext>(options =>
+                options.UseNpgsql(configuration.GetConnectionString("SqlDockerDevelopmentConnection")));
+        }
+        else
+        {
+            services.AddDbContext<LibraryContext>(options =>
+                options.UseNpgsql(Environment.GetEnvironmentVariable("POSTGRESQLCONNSTR_Database")));
+        }
 
         services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
             .AddEntityFrameworkStores<LibraryContext>()

@@ -42,5 +42,21 @@ namespace Library.Domain.Books.Models
                 _ => throw new ArgumentException("Invalid status value")
             };
         }
+
+        public static Genre FromName(string name)
+        {
+            string genreName = (name ?? string.Empty).Trim().ToLower();
+
+            return genreName switch
+            {
+                "comedy" => Comedy,
+                "thriller" => Thriller,
+                "drama" => Drama,
+                "horror" => Horror,
+                "romance" => Romance,
+                "sincefiction" => SinceFiction,
+                _ => default!
+            };
+        }
     }
 }

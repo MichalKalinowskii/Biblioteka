@@ -22,9 +22,22 @@ namespace Library.Domain.Books
             this.unitOfWork = unitOfWork;
         }
 
-        public async Task<Result> AddNewBookAsync(BookEntity book, CancellationToken cancellationToken)
+        public async Task<Result> AddNewBookAsync(string publisher,
+            string title,
+            string titlePageImageUrl,
+            DateTime releaseDate,
+            string description,
+            string ISBN,
+            Genre genre, 
+            CancellationToken cancellationToken)
         {
-            var result = BookFactory.Create(book);
+            var result = BookFactory.Create(publisher,
+            title,
+            titlePageImageUrl,
+            releaseDate,
+            description,
+            ISBN,
+            genre);
 
             if (result.IsFailure)
             {
@@ -98,6 +111,16 @@ namespace Library.Domain.Books
                 return Result<Book>.Failure(BookErrors.BookNotFound);
             }
             return Result<Book>.Success(book.Value);
+        }
+
+        public async Task<Result<List<Book>>> GetAllBooksByGenreId(int genreId, CancellationToken cancellationToken)
+        {
+            var books = await bookPersistence.GetAllBooksByGenreId(genreId, cancellationToken);
+            if (books.IsFailure)
+            {
+                return Result<List<Book>>.Failure(books.Error);
+            }
+            return Result<List<Book>>.Success(books.Value);
         }
     }
 }

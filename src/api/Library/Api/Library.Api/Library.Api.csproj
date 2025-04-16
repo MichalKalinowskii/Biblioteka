@@ -19,4 +19,8 @@
       <ProjectReference Include="..\..\Infrastructure\Library.Infrastructure\Library.Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Endpoints\BookCopy\" />
+    </ItemGroup>
+
 </Project>
