@@ -25,10 +25,6 @@ public class RentalEntityConfiguration : IEntityTypeConfiguration<Rental>
         builder.Property(x => x.LibraryCardId)
             .IsRequired();
 
-        //var bookRentalsConfiguration = builder.Navigation(x => x.BookRentals);
-
-        //bookRentalsConfiguration.Metadata.SetField("_bookRentals");
-        
         builder.HasOne<Employee>()
             .WithMany()
             .HasForeignKey(x => x.EmployeeId)
