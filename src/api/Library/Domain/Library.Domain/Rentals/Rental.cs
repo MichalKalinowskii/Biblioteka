@@ -84,7 +84,7 @@ public class Rental
             return Result.Failure(RentalErrors.EmptyBookList());
         }
 
-        if (BookRentals.Any(bookRental => !bookCopyIds.Contains(bookRental.BookCopyId)))
+        if (BookRentals.All(bookRental => !bookCopyIds.Contains(bookRental.BookCopyId)))
         {
             return Result.Failure(RentalErrors.NotBorrowedBook());
         }
@@ -99,6 +99,10 @@ public class Rental
         if (AllBooksReturned())
         {
             Status = RentalStatus.Returned;
+        }
+        else
+        {
+            Status = RentalStatus.PartiallyReturned;
         }
         
         return Result.Success();

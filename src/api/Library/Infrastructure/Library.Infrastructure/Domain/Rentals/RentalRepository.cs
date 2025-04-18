@@ -12,7 +12,15 @@ public class RentalRepository : IRentalRepository
     {
         _rentals = libraryContext.Set<Rental>();
     }
-    
+
+    public async Task<Rental?> GetActiveRentalByLibraryCardIdAsync(Guid libraryCardId, CancellationToken cancellationToken)
+    {
+        return await _rentals
+            .Include(x => x.BookRentals)
+            .Where(x => x.Status != RentalStatus.Returned)
+            .FirstOrDefaultAsync(x => x.LibraryCardId == libraryCardId, cancellationToken);
+    }
+
     public async Task AddAsync(Rental rental, CancellationToken cancellationToken)
     {
         await _rentals.AddAsync(rental, cancellationToken);

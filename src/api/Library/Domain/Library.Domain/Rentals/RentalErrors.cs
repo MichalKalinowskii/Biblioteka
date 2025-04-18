@@ -15,4 +15,6 @@ public class RentalErrors
     public static Error InvalidEmployee() => new Error("Rentals.InvalidEmployee", "Employee was not valid.");
     
     public static Error ReturnDateShouldBePlacedInFuture() => new Error("Rentals.ReturnDateShouldBePlacedInFuture", "Return date should be placed in future.");
+    
+    public static Error ThereWereNoActiveRentalsForLibraryCard() => new Error("Rentals.ThereWereNoActiveRentalsForLibraryCard", "There were no active rentals for the library card.");
 }
