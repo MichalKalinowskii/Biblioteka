@@ -17,7 +17,7 @@ public class RentalRepository : IRentalRepository
     {
         return await _rentals
             .Include(x => x.BookRentals)
-            .Where(x => x.Status == RentalStatus.InProgress)
+            .Where(x => x.Status != RentalStatus.Returned)
             .FirstOrDefaultAsync(x => x.LibraryCardId == libraryCardId, cancellationToken);
     }
 

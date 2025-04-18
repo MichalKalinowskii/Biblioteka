@@ -46,6 +46,15 @@ public class RentalService
             return Result.Failure(RentalErrors.ThereWereNoActiveRentalsForLibraryCard());
         }
         
-        return rental.ReturnBooks(bookCopyIds);
+        Result result = rental.ReturnBooks(bookCopyIds);
+
+        if (result.IsFailure)
+        {
+            return result;
+        }
+        
+        await _unitOfWork.CommitAsync(cancellationToken);
+        
+        return result;
     }
 }
