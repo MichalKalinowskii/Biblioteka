@@ -1,3 +1,4 @@
+using Library.Domain.Authors;
 using Library.Domain.Clients;
 using Library.Domain.Rentals;
 using Library.Domain.BookCopies.Interfaces;
@@ -7,6 +8,7 @@ using Library.Infrastructure.Authentication;
 using Library.Infrastructure.Data;
 using Library.Infrastructure.Domain;
 using Library.Infrastructure.Domain.BookCopies;
+using Library.Infrastructure.Domain.Authors;
 using Library.Infrastructure.Domain.Books;
 using Library.Infrastructure.Domain.Clients;
 using Library.Infrastructure.Domain.Rentals;
@@ -58,6 +60,10 @@ public static class Registration
         services.AddScoped<IRentalRepository, RentalRepository>();
         services.AddScoped<IClientRepository, ClientRepository>();
         services.AddScoped<IBookPersistence, BookRepository>();
+        services.AddScoped<IAuthorPersistance, AuthorRepository>();
+        services.AddScoped<AuthorService>();
+        
+        services.AddJwtAuthentication(configuration);
         services.AddScoped<IBookCopyPersistance, BookCopyRepository>();
     }
 }
