@@ -36,4 +36,25 @@ public class RentalService
 
         return result;
     }
+
+    public async Task<Result> ReturnBookAsync(Guid libraryCardId, List<Guid> bookCopyIds, CancellationToken cancellationToken)
+    {
+        Rental? rental = await _rentalRepository.GetActiveRentalByLibraryCardIdAsync(libraryCardId, cancellationToken);
+
+        if (rental is null)
+        {
+            return Result.Failure(RentalErrors.ThereWereNoActiveRentalsForLibraryCard());
+        }
+        
+        Result result = rental.ReturnBooks(bookCopyIds);
+
+        if (result.IsFailure)
+        {
+            return result;
+        }
+        
+        await _unitOfWork.CommitAsync(cancellationToken);
+        
+        return result;
+    }
 }
