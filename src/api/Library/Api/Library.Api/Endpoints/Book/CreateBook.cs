@@ -17,16 +17,15 @@ namespace Library.Api.Endpoints.Book
                         createBookDto.releaseDate,
                         createBookDto.description,
                         createBookDto.ISBN,
-                        Genre.FromName(createBookDto.genrenName),
+                        Genre.FromName(createBookDto.genreName),
                         cancellationToken);
 
                     if (result.IsFailure)
                     {
                         return Results.BadRequest(result);
                     }
-                    return Results.Created($"{createBookDto.ISBN}", createBookDto);
-                })
-                .WithTags(Tags.Books);
+                    return Results.Created();
+                }).WithTags(Tags.Books);
         }
     }
 }

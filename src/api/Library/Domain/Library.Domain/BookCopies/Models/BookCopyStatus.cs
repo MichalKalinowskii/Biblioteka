@@ -37,7 +37,22 @@ namespace Library.Domain.BookCopies.Models
                 3 => Lost,
                 4 => Damaged,
                 5 => Unavailable,
-                _ => throw new ArgumentException("Invalid status value")
+                _ => default!
+            };
+        }
+
+        public static BookCopyStatus FromName(string name)
+        {
+            var statusName = (name ?? string.Empty).Trim().ToLower();
+
+            return statusName switch 
+            {
+                "available" => Available,
+                "reserved" => Reserved,
+                "lost" => Lost,
+                "damaged" => Damaged,
+                "unavailable" => Unavailable,
+                _ => default!
             };
         }
     }
