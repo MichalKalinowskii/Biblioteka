@@ -5,23 +5,22 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Library.Api.Endpoints.BookCopy
 {
-    public class ChangeBookCopyStatus : IEndpoint
+    public class AddBookCopy : IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("bookcopy/status", async ([FromBody] BookCopyStatusDto bookCopyStatusDto, BookCopyService bookService, CancellationToken cancellationToken) =>
+            app.MapPost("bookcopy/status", async ([FromBody] BookCopyAddNewDto bookCopyDto, BookCopyService bookService, CancellationToken cancellationToken) =>
             {
-                var bookCopyStatus = BookCopyStatus.FromName(bookCopyStatusDto.bookCopyStatusName);
-
-                var result = await bookService.ChangeBookCopyStatusAsync(bookCopyStatusDto.bookId,
-                    bookCopyStatus,
+                var result = await bookService.AddNewBookCopyAsync(bookCopyDto.BookId,
+                    bookCopyDto.LocationId,
+                    BookCopyStatus.FromName(bookCopyDto.statusName),
                     cancellationToken);
 
                 if (result.IsFailure)
                 {
                     return Results.BadRequest(result);
                 }
-                return Results.Ok();
+                return Results.Created();
             }).WithTags(Tags.BookCopy);
         }
     }

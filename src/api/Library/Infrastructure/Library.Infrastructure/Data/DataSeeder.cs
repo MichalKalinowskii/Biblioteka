@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Identity;
 using Library.Domain.Books;
 using Library.Domain.BookCopies;
 using Library.Domain.Books.Models;
-using Library.Domain.Books.Entites;
 using Library.Domain.BookCopies.Models;
 using Library.Domain.Clients;
 using Library.Domain.Rentals;

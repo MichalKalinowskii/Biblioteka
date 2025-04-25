@@ -60,7 +60,12 @@ namespace Library.Domain.BookCopies
                 return Result.Failure(BookCopyErrors.BookCopyNotFound);
             }
 
-            bookCopy.Value.ChangeStatus(newStatus);
+            var statusResult = bookCopy.Value.ChangeStatus(newStatus);
+            if (statusResult.IsFailure) 
+            {
+                return Result.Failure(statusResult.Error);
+            }
+
             var updateResult = bookCopyPersistance.UpdateBookCopy(bookCopy.Value, cancellationToken);
 
             if (updateResult.IsFailure)
@@ -99,6 +104,13 @@ namespace Library.Domain.BookCopies
             {
                 return Result.Failure(BookCopyErrors.BookCopyNotFound);
             }
+
+            //var locationValid = await locationService.IsLocationIdValid(locationId, cancellationToken);
+
+            //if (locationValid.IsFailure)
+            //{
+            //    return Result.Failure(locationValid.Error);
+            //}
 
             var result = bookCopy.Value.ChangeLocation(locationId);
 

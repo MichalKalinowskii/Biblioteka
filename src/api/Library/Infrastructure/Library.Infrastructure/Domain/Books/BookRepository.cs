@@ -62,6 +62,23 @@ public class BookRepository : IBookPersistence
         return result!;
     }
 
+    public async Task<Result<List<Book>>> GetBooksByTitle(string title, CancellationToken cancellationToken)
+    {
+        Result<List<Book>> result = default;
+
+        try
+        {
+            var books = await bookContext.Where(x => x.Title.Contains(title)).ToListAsync(cancellationToken);
+            result = Result<List<Book>>.Success(books);
+        }
+        catch (Exception ex) 
+        {
+            result = Result<List<Book>>.Failure(new Error("BookRepository.GetBooksByTitle", ex.Message));
+        }
+
+        return result;
+    }
+
     public async Task<Result<Book>> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         Result<Book> result = default;

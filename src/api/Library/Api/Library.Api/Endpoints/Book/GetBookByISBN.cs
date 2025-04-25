@@ -1,6 +1,5 @@
 ﻿
 using Library.Domain.Books;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Library.Api.Endpoints.Book
 {

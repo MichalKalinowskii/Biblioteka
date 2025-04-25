@@ -9,7 +9,7 @@ namespace Library.Api.Endpoints.Book
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("books/changegenre", async ([FromBody] BookGenreDto bookGenreDto, BookService bookService, CancellationToken cancellationToken) =>
+            app.MapPost("book/changegenre", async ([FromBody] BookGenreDto bookGenreDto, BookService bookService, CancellationToken cancellationToken) =>
             {
                 var result = await bookService.ChangeBookGenreAsync(bookGenreDto.ISBN,
                     Genre.FromName(bookGenreDto.genreName),

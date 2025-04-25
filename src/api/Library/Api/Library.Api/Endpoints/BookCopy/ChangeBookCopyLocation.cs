@@ -1,20 +1,17 @@
 ﻿using Library.Application.BookCopy;
 using Library.Domain.BookCopies;
-using Library.Domain.BookCopies.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Library.Api.Endpoints.BookCopy
 {
-    public class ChangeBookCopyStatus : IEndpoint
+    public class ChangeBookCopyLocation : IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("bookcopy/status", async ([FromBody] BookCopyStatusDto bookCopyStatusDto, BookCopyService bookService, CancellationToken cancellationToken) =>
+            app.MapPost("bookcopy/status", async ([FromBody] BookCopyLocationDto bookCopyDto, BookCopyService bookService, CancellationToken cancellationToken) =>
             {
-                var bookCopyStatus = BookCopyStatus.FromName(bookCopyStatusDto.bookCopyStatusName);
-
-                var result = await bookService.ChangeBookCopyStatusAsync(bookCopyStatusDto.bookId,
-                    bookCopyStatus,
+                var result = await bookService.ChangeBookCopyLocation(bookCopyDto.bookId,
+                    bookCopyDto.LocationId,
                     cancellationToken);
 
                 if (result.IsFailure)

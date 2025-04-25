@@ -1,13 +1,6 @@
-﻿using Library.Domain.Books.Entites;
-using Library.Domain.Books.Errors;
-using Library.Domain.Books.Interfaces;
+﻿using Library.Domain.Books.Errors;
 using Library.Domain.Books.Models;
 using Library.Domain.SeedWork;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Library.Domain.Books
 {

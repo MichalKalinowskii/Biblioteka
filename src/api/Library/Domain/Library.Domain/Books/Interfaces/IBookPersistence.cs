@@ -1,5 +1,4 @@
-﻿using Library.Domain.Books.Entites;
-using Library.Domain.Books.Models;
+﻿using Library.Domain.Books.Models;
 using Library.Domain.SeedWork;
 
 namespace Library.Domain.Books.Interfaces
@@ -15,5 +14,7 @@ namespace Library.Domain.Books.Interfaces
         Result UpdateBook(Book book, CancellationToken cancellationToken);
 
         Task<Result<List<Book>>> GetAllBooksByGenreId(int genreId, CancellationToken cancellationToken);
+
+        Task<Result<List<Book>>> GetBooksByTitle(string title, CancellationToken cancellationToken);
     }
 }

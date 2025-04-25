@@ -2,13 +2,13 @@
 
 namespace Library.Api.Endpoints.Book
 {
-    public class GetBooksByGenre : IEndpoint
+    public class GetBooksByTitle : IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapGet("books/{genreName}", async (string genreName, BookService bookService, CancellationToken cancalationToken) =>
+            app.MapGet("books/title/{title}", async (string title, BookService bookService, CancellationToken cancalationToken) =>
             {
-                var books = await bookService.GetAllBooksByGenreId(genreName, cancalationToken);
+                var books = await bookService.GetBooksByTitle(title, cancalationToken);
 
                 if (books.IsFailure)
                 {

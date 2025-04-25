@@ -53,6 +53,7 @@ public static class Registration
         services.AddScoped<RentalService>();
         services.AddScoped<BookCopyService>();
         services.AddScoped<BookService>();
+        services.AddScoped<AuthorService>();
     }
     
     private static void AddRepositories(this IServiceCollection services)
@@ -61,9 +62,6 @@ public static class Registration
         services.AddScoped<IClientRepository, ClientRepository>();
         services.AddScoped<IBookPersistence, BookRepository>();
         services.AddScoped<IAuthorPersistance, AuthorRepository>();
-        services.AddScoped<AuthorService>();
-        
-        services.AddJwtAuthentication(configuration);
         services.AddScoped<IBookCopyPersistance, BookCopyRepository>();
     }
 }
