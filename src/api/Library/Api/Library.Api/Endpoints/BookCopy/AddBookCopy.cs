@@ -9,7 +9,7 @@ namespace Library.Api.Endpoints.BookCopy
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("bookcopy/status", async ([FromBody] BookCopyAddNewDto bookCopyDto, BookCopyService bookService, CancellationToken cancellationToken) =>
+            app.MapPost("bookcopy/add", async ([FromBody] BookCopyAddNewDto bookCopyDto, BookCopyService bookService, CancellationToken cancellationToken) =>
             {
                 var result = await bookService.AddNewBookCopyAsync(bookCopyDto.BookId,
                     bookCopyDto.LocationId,

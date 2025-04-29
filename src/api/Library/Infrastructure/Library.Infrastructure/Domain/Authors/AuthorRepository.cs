@@ -1,6 +1,8 @@
 ﻿using Library.Domain.Authors;
 using Library.Domain.Authors.Models;
 using Library.Domain.SeedWork;
+using Library.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +13,28 @@ namespace Library.Infrastructure.Domain.Authors
 {
     internal class AuthorRepository : IAuthorPersistance
     {
-        public Task<Result<Author>> AddNewAuthor(Author author, CancellationToken cancellationToken)
+        private DbSet<Author> authors;
+
+        public AuthorRepository(LibraryContext context)
         {
-            throw new NotImplementedException();
+            authors = context.Set<Author>();
+        }
+
+        public async Task<Result<Author>> AddNewAuthor(Author author, CancellationToken cancellationToken)
+        {
+            Result<Author> result;
+
+            try
+            {
+                await authors.AddAsync(author, cancellationToken);
+                result = Result<Author>.Success(author);
+            }
+            catch (Exception ex) 
+            {
+                result = Result<Author>.Failure(new Error("AuthorRepository.AddNewAuthor", ex.Message));
+            }
+
+            return result;
         }
     }
 }

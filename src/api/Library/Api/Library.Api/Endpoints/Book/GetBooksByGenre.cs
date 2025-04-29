@@ -6,7 +6,7 @@ namespace Library.Api.Endpoints.Book
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapGet("books/{genreName}", async (string genreName, BookService bookService, CancellationToken cancalationToken) =>
+            app.MapGet("books/genre/{genreName}", async (string genreName, BookService bookService, CancellationToken cancalationToken) =>
             {
                 var books = await bookService.GetAllBooksByGenreId(genreName, cancalationToken);
 

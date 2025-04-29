@@ -7,7 +7,7 @@ namespace Library.Api.Endpoints.Book
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapGet("book/{ISBN}", async (string ISBN, BookService bookService, CancellationToken cancalationToken) =>
+            app.MapGet("book/isbn/{ISBN}", async (string ISBN, BookService bookService, CancellationToken cancalationToken) =>
             {
                 var book = await bookService.GetBookByISBN(ISBN, cancalationToken);
 

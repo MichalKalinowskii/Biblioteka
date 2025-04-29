@@ -9,7 +9,7 @@ namespace Library.Api.Endpoints.BookCopy
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("bookcopy/status", async ([FromBody] BookCopyStatusDto bookCopyStatusDto, BookCopyService bookService, CancellationToken cancellationToken) =>
+            app.MapPost("bookcopy/changestatus", async ([FromBody] BookCopyStatusDto bookCopyStatusDto, BookCopyService bookService, CancellationToken cancellationToken) =>
             {
                 var bookCopyStatus = BookCopyStatus.FromName(bookCopyStatusDto.bookCopyStatusName);
 
