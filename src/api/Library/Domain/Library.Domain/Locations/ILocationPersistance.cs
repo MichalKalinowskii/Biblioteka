@@ -10,6 +10,6 @@ namespace Library.Domain.Locations
 {
     public interface ILocationPersistance
     {
-        Task<Result> AddNewLocation(Location location, CancellationToken cancellationToken);
+        Task<Result> AddLocationAsync(Location location, CancellationToken cancellationToken);
     }
 }

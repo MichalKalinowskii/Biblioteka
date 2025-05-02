@@ -45,6 +45,22 @@ public class BookRepository : IBookPersistence
         return result!;
     }
 
+    public async Task<Result<List<Book>>> GetAllBooks(CancellationToken cancellationToken)
+    {
+        Result<List<Book>> result = default;
+        try
+        {
+            var books = await bookContext.ToListAsync(cancellationToken);
+            result = Result<List<Book>>.Success(books);
+        }
+        catch(Exception ex)
+        {
+            result = Result<List<Book>>.Failure(new Error("BookRepository.GetAllBooksWithLocation", ex.Message));
+        }
+
+        return result;
+    }
+
     public async Task<Result<Book>> GetBookByISBN(string ISBN, CancellationToken cancellationToken)
     {
         Result<Book> result = default;

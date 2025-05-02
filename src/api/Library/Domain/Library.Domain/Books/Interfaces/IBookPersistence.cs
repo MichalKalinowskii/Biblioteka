@@ -16,5 +16,7 @@ namespace Library.Domain.Books.Interfaces
         Task<Result<List<Book>>> GetAllBooksByGenreId(int genreId, CancellationToken cancellationToken);
 
         Task<Result<List<Book>>> GetBooksByTitle(string title, CancellationToken cancellationToken);
+
+        Task<Result<List<Book>>> GetAllBooks(CancellationToken cancellationToken);
     }
 }

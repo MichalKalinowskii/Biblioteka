@@ -1,4 +1,5 @@
-﻿using Library.Domain.Locations.Models;
+﻿using Library.Domain.Locations.Errors;
+using Library.Domain.Locations.Models;
 using Library.Domain.SeedWork;
 using System;
 using System.Collections.Generic;
@@ -15,21 +16,21 @@ namespace Library.Domain.Locations
             
         }
 
-        public Result<Location> Create(int zone, int level, int shell, string description)
+        public static Result<Location> Create(int zone, int level, int shell, string description)
         {
             if (zone <= (int)default)
             {
-
+                return Result<Location>.Failure(LocationErrors.InvalidZoneNumber);
             }
 
             if (level <= (int)default)
             {
-
+                return Result<Location>.Failure(LocationErrors.InvalidLevelNumber);
             }
 
             if (shell <= (int)default)
             {
-
+                return Result<Location>.Failure(LocationErrors.InvalidShellNumber);
             }
 
             var location = new Location(Guid.NewGuid(), zone, shell, level, description ?? string.Empty);

@@ -19,10 +19,29 @@ namespace Library.Domain.Locations
             this.unitOfWork = unitOfWork;
         }
 
-        public AddNewLocation(Location location, CancellationToken cancellationToken) 
+        public async Task<Result> AddNewLocation(int zone, 
+            int level, 
+            int shell, 
+            string description, 
+            CancellationToken cancellationToken)
         {
+            var location = LocationFactory.Create(zone, level, shell, description);
 
+            if (location.IsFailure)
+            {
+                return Result.Failure(location.Error);
+            }
+
+            var saveLocationResult = await locationPersistance.AddLocationAsync(location.Value!, cancellationToken);
+
+            if (saveLocationResult.IsFailure)
+            {
+                return Result.Failure(saveLocationResult.Error);
+            }
+
+            await unitOfWork.CommitAsync(cancellationToken);
+
+            return Result.Success();
         }
-
     }
 }

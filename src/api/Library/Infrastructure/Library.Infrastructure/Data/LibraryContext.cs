@@ -13,6 +13,10 @@ using Library.Domain.Books.Models;
 using Library.Domain.BookCopies.Models;
 using Library.Infrastructure.Domain.Books;
 using Library.Infrastructure.Domain.BookCopies;
+using Library.Domain.Authors.Models;
+using Library.Domain.Locations.Models;
+using Library.Infrastructure.Domain.Authors;
+using Library.Infrastructure.Domain.Locations;
 
 namespace Library.Infrastructure.Data;
 
@@ -26,7 +30,9 @@ public class LibraryContext : IdentityDbContext<ApplicationUser, IdentityRole<Gu
     public virtual DbSet<BookCopy> BookCopies { get; set; }
     public virtual DbSet<Genre> Genres { get; set; }
     public virtual DbSet<BookCopyStatus> BookCopyStatuses { get; set; }
-
+    public virtual DbSet<Author> Authors { get; set; }
+    public virtual DbSet<AuthorBook> AuthorBooks { get; set; }
+    public virtual DbSet<Location> Locations { get; set; }
 
     public LibraryContext(DbContextOptions<LibraryContext> options)
         : base(options)
@@ -43,6 +49,8 @@ public class LibraryContext : IdentityDbContext<ApplicationUser, IdentityRole<Gu
         builder.ApplyConfiguration(new BookEntityConfiguration());
         builder.ApplyConfiguration(new BookCopyEntityConfiguration());
         builder.ApplyConfiguration(new GenreEntityConfiguration());
-        builder.ApplyConfiguration(new BookCopyStatusEntityConfiguration());
+        builder.ApplyConfiguration(new AuthorEntityConfiguration());
+        builder.ApplyConfiguration(new AuthorBookEntityConfiguration());
+        builder.ApplyConfiguration(new LocationEntityConfiguration());
     }
 }

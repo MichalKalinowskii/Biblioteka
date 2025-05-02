@@ -2,6 +2,7 @@
 using Library.Domain.Books.Interfaces;
 using Library.Domain.Books.Models;
 using Library.Domain.SeedWork;
+using Microsoft.VisualBasic;
 
 namespace Library.Domain.Books
 {
@@ -132,6 +133,18 @@ namespace Library.Domain.Books
             }
 
             return Result<List<Book>>.Success(books.Value);
+        }
+
+        public async Task<Result<List<Book>>> GetAllBooks(CancellationToken cancellationToken)
+        {
+            var result = await bookPersistence.GetAllBooks(cancellationToken);
+
+            if (result.IsFailure)
+            {
+                return Result<List<Book>>.Failure(result.Error);
+            }
+
+            return Result<List<Book>>.Success(result.Value!);
         }
     }
 }
