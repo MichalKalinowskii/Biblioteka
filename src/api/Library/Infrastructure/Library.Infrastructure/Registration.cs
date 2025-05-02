@@ -24,7 +24,7 @@ public static class Registration
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<LibraryContext>(options =>
-            options.UseNpgsql(Environment.GetEnvironmentVariable("POSTGRESQLCONNSTR_Database")));
+            options.UseNpgsql(configuration.GetConnectionString("SqlDockerDevelopmentConnection")));
 
         services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
             .AddEntityFrameworkStores<LibraryContext>()

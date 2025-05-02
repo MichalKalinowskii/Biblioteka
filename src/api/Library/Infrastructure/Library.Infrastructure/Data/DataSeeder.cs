@@ -19,6 +19,7 @@ namespace Library.Infrastructure.Data
         private LibraryContext _dbContext;
         private PasswordHasher<ApplicationUser> _passwordHasher;
         private UserManager<ApplicationUser> _userManager;
+        private RoleManager<IdentityRole<Guid>> _roleManager;
         private BookService _bookService;
         private BookCopyService _bookCopyService;
 
@@ -30,6 +31,8 @@ namespace Library.Infrastructure.Data
             _userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             _bookService =  scope.ServiceProvider.GetRequiredService<BookService>();
             _bookCopyService = scope.ServiceProvider.GetRequiredService<BookCopyService>();
+            _roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+           
 
             await SeedData();
         }
@@ -205,12 +208,16 @@ namespace Library.Infrastructure.Data
         private async Task<List<Employee>> AddEmployees(List<ApplicationUser> applicationUsers)
         {
             List<Employee> employees = new List<Employee>();
-            
+
+            await _roleManager.CreateAsync(new IdentityRole<Guid>("Employee"));
+
             employees.Add(Employee.Create(applicationUsers[0].Id).Value);
             
             await _dbContext.Set<Employee>().AddRangeAsync(employees);
             
             await _dbContext.SaveChangesAsync();
+
+            await _userManager.AddToRoleAsync(applicationUsers[0], "Employee");
             
             return employees;
         }
@@ -218,14 +225,19 @@ namespace Library.Infrastructure.Data
         private async Task<List<Client>> AddClients(List<ApplicationUser> applicationUsers)
         {
             List<Client> clients = new List<Client>();
-            
+
+            await _roleManager.CreateAsync(new IdentityRole<Guid>("Client"));
+
             clients.Add(Client.Create(applicationUsers[1].Id, Guid.NewGuid()).Value);
             clients.Add(Client.Create(applicationUsers[2].Id, Guid.NewGuid()).Value);
             
             await _dbContext.Set<Client>().AddRangeAsync(clients);
             
             await _dbContext.SaveChangesAsync();
-            
+
+            await _userManager.AddToRoleAsync(applicationUsers[1], "Client");
+            await _userManager.AddToRoleAsync(applicationUsers[2], "Client");
+
             return clients;
         }
 

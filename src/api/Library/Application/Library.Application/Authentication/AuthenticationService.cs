@@ -75,6 +75,8 @@ public class AuthenticationService
             return Result<LoginResponseDto>.Failure(AuthenticationErrors.InvalidEmailOrPassword());
         }
 
+        IList<string> roles = await _userManager.GetRolesAsync(applicationUser);
+
         SignInResult signInResult = await _signInManager.CheckPasswordSignInAsync(applicationUser, loginRequestDto.Password, false);
 
         if (!signInResult.Succeeded)
@@ -82,7 +84,7 @@ public class AuthenticationService
             return Result<LoginResponseDto>.Failure(AuthenticationErrors.InvalidEmailOrPassword());
         }
 
-        string token = _jwtTokenService.GenerateToken(applicationUser);
+        string token = _jwtTokenService.GenerateToken(applicationUser, roles);
 
         return Result<LoginResponseDto>.Success(new LoginResponseDto(token));
     }
