@@ -1,13 +1,10 @@
 ﻿using Microsoft.Data.SqlClient;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Npgsql;
+using System.Data;
 
 namespace Library.Infrastructure.Data
 {
-    public class SqlConnectionFactory : ISqlConnectionFactory
+    public class SqlConnectionFactory
     {
         private readonly string _connectionString;
         private IDbConnection? _connection;
@@ -21,7 +18,7 @@ namespace Library.Infrastructure.Data
         {
             if (this._connection == null || this._connection.State != ConnectionState.Open)
             {
-                this._connection = new SqlConnection(_connectionString);
+                this._connection = new NpgsqlConnection(_connectionString);
                 this._connection.Open();
             }
 

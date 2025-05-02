@@ -1,5 +1,6 @@
 ﻿using Library.Domain.Books;
 using Library.Domain.Locations;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Library.Api.Endpoints.Book
 {
@@ -7,7 +8,7 @@ namespace Library.Api.Endpoints.Book
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapGet("books", async (BookService bookService, LocationService locationService, CancellationToken cancalationToken) =>
+            app.MapGet("books", async ([FromServices] BookService bookService, [FromServices] LocationService locationService, CancellationToken cancalationToken) =>
             {
                 var books = await bookService.GetAllBooks(cancalationToken);
                 if (books.IsFailure)

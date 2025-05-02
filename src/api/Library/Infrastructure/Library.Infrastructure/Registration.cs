@@ -25,22 +25,19 @@ public static class Registration
 {
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration, bool isDevelopment)
     {
-<<<<<<< HEAD
-        services.AddDbContext<LibraryContext>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("SqlDockerDevelopmentConnection")));
-=======
+        string connectionString = string.Empty;
+
         if (isDevelopment)
         {
-            var test = configuration.GetConnectionString("SqlDockerDevelopmentConnection");
-            services.AddDbContext<LibraryContext>(options =>
-                options.UseNpgsql(configuration.GetConnectionString("SqlDockerDevelopmentConnection")));
+            connectionString = configuration.GetConnectionString("SqlDockerDevelopmentConnection");
         }
         else
         {
-            services.AddDbContext<LibraryContext>(options =>
-                options.UseNpgsql(Environment.GetEnvironmentVariable("POSTGRESQLCONNSTR_Database")));
+            connectionString = Environment.GetEnvironmentVariable("POSTGRESQLCONNSTR_Database");
         }
->>>>>>> origin/BookEndpoints
+
+        services.AddDbContext<LibraryContext>(options =>
+    options.UseNpgsql(connectionString));
 
         services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
             .AddEntityFrameworkStores<LibraryContext>()
@@ -49,6 +46,11 @@ public static class Registration
         services.AddJwtAuthentication(configuration);
         services.AddRepositories();
         services.AddDomainServices();
+        services.AddHttpContextAccessor();
+        services.AddScoped<IAuthenticatedUserService, AuthenticatedUserService>();
+
+        services.AddScoped<SqlConnectionFactory>(x => new SqlConnectionFactory(connectionString));
+
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
     }

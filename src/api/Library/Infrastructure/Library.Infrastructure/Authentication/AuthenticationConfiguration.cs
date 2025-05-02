@@ -11,6 +11,7 @@ internal static class AuthenticationConfiguration
     {
         var jwtSettings = configuration.GetSection("Jwt");
 
+        services.AddAuthorization();
         services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

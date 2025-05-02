@@ -21,8 +21,8 @@ public class JwtTokenService
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.UserName!),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim("userId", user.Id.ToString()),
-            new Claim("role", roles.FirstOrDefault()!)
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Role, roles.First().ToString())
         };
 
         string? secret = _configuration.GetSection("Jwt")["Secret"];
