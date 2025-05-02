@@ -1,13 +1,8 @@
-﻿using Library.Domain.Books.Entites;
-using Library.Domain.Books.Errors;
+﻿using Library.Domain.Books.Errors;
 using Library.Domain.Books.Interfaces;
 using Library.Domain.Books.Models;
 using Library.Domain.SeedWork;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.VisualBasic;
 
 namespace Library.Domain.Books
 {
@@ -22,9 +17,22 @@ namespace Library.Domain.Books
             this.unitOfWork = unitOfWork;
         }
 
-        public async Task<Result> AddNewBookAsync(BookEntity book, CancellationToken cancellationToken)
+        public async Task<Result> AddNewBookAsync(string publisher,
+            string title,
+            string titlePageImageUrl,
+            DateTime releaseDate,
+            string description,
+            string ISBN,
+            Genre genre, 
+            CancellationToken cancellationToken)
         {
-            var result = BookFactory.Create(book);
+            var result = BookFactory.Create(publisher,
+            title,
+            titlePageImageUrl,
+            releaseDate,
+            description,
+            ISBN,
+            genre);
 
             if (result.IsFailure)
             {
@@ -93,11 +101,50 @@ namespace Library.Domain.Books
             {
                 return Result<Book>.Failure(book.Error);
             }
-            if (book.Value is null)
-            {
-                return Result<Book>.Failure(BookErrors.BookNotFound);
-            }
+
             return Result<Book>.Success(book.Value);
+        }
+
+        public async Task<Result<List<Book>>> GetBooksByTitle(string title, CancellationToken cancellationToken)
+        {
+            var books = await bookPersistence.GetBooksByTitle(title, cancellationToken);
+
+            if (books.IsFailure) 
+            {
+                return Result<List<Book>>.Failure(books.Error);
+            }
+
+            return Result<List<Book>>.Success(books.Value);
+        }
+
+        public async Task<Result<List<Book>>> GetAllBooksByGenreId(string genreName, CancellationToken cancellationToken)
+        {
+            var genre = Genre.FromName(genreName);
+
+            if (genre is null)
+            {
+                return Result<List<Book>>.Failure(BookErrors.InvalidaGenre);
+            }
+
+            var books = await bookPersistence.GetAllBooksByGenreId(genre.Id, cancellationToken);
+            if (books.IsFailure)
+            {
+                return Result<List<Book>>.Failure(books.Error);
+            }
+
+            return Result<List<Book>>.Success(books.Value);
+        }
+
+        public async Task<Result<List<Book>>> GetAllBooks(CancellationToken cancellationToken)
+        {
+            var result = await bookPersistence.GetAllBooks(cancellationToken);
+
+            if (result.IsFailure)
+            {
+                return Result<List<Book>>.Failure(result.Error);
+            }
+
+            return Result<List<Book>>.Success(result.Value!);
         }
     }
 }

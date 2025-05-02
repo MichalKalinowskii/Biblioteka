@@ -18,5 +18,6 @@ namespace Library.Domain.Books.Errors
         public static Error GenreMissing => new("Book.GenreMissing", "Book genre is missing");
         public static Error BookAlreadyExists => new("Book.BookAlreadyExists", "Book already exists");
         public static Error BookNotFound => new("Book.BookNotFound", "Book not found");
+        public static Error InvalidaGenre => new("Book.InvalidGenre", "Given genre name was invalid");
     }
 }

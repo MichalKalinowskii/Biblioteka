@@ -26,9 +26,15 @@ namespace Library.Domain.BookCopies.Models
             Status = status;
         }
 
-        public void ChangeStatus(BookCopyStatus newStatus)
+        public Result ChangeStatus(BookCopyStatus newStatus)
         {
+            if (newStatus is null)
+            {
+                return Result.Failure(BookCopyErrors.InvalidBookCopyStatusName);
+            }
+
             Status = newStatus;
+            return Result.Success();
         }
 
         public Result ChangeLocation(Guid locationId)

@@ -1,3 +1,4 @@
+using Library.Domain.Authors;
 using Library.Domain.Clients;
 using Library.Domain.Rentals;
 using Library.Domain.BookCopies.Interfaces;
@@ -7,6 +8,7 @@ using Library.Infrastructure.Authentication;
 using Library.Infrastructure.Data;
 using Library.Infrastructure.Domain;
 using Library.Infrastructure.Domain.BookCopies;
+using Library.Infrastructure.Domain.Authors;
 using Library.Infrastructure.Domain.Books;
 using Library.Infrastructure.Domain.Clients;
 using Library.Infrastructure.Domain.Rentals;
@@ -21,10 +23,24 @@ namespace Library.Infrastructure;
 
 public static class Registration
 {
-    public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration, bool isDevelopment)
     {
+<<<<<<< HEAD
         services.AddDbContext<LibraryContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("SqlDockerDevelopmentConnection")));
+=======
+        if (isDevelopment)
+        {
+            var test = configuration.GetConnectionString("SqlDockerDevelopmentConnection");
+            services.AddDbContext<LibraryContext>(options =>
+                options.UseNpgsql(configuration.GetConnectionString("SqlDockerDevelopmentConnection")));
+        }
+        else
+        {
+            services.AddDbContext<LibraryContext>(options =>
+                options.UseNpgsql(Environment.GetEnvironmentVariable("POSTGRESQLCONNSTR_Database")));
+        }
+>>>>>>> origin/BookEndpoints
 
         services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
             .AddEntityFrameworkStores<LibraryContext>()
@@ -42,6 +58,7 @@ public static class Registration
         services.AddScoped<RentalService>();
         services.AddScoped<BookCopyService>();
         services.AddScoped<BookService>();
+        services.AddScoped<AuthorService>();
     }
     
     private static void AddRepositories(this IServiceCollection services)
@@ -49,6 +66,7 @@ public static class Registration
         services.AddScoped<IRentalRepository, RentalRepository>();
         services.AddScoped<IClientRepository, ClientRepository>();
         services.AddScoped<IBookPersistence, BookRepository>();
+        services.AddScoped<IAuthorPersistance, AuthorRepository>();
         services.AddScoped<IBookCopyPersistance, BookCopyRepository>();
     }
 }
