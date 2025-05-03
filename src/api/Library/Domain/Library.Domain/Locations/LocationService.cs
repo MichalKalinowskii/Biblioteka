@@ -43,5 +43,18 @@ namespace Library.Domain.Locations
 
             return Result.Success();
         }
+
+        public async Task<Result<List<Location>>> GetLocationByIds(List<Guid> locationIds, CancellationToken cancellationToken)
+        {
+            var locations = await locationPersistance
+                .GetLocationByIdsAsync(locationIds, cancellationToken);
+
+            if (locations.IsFailure)
+            {
+                return Result<List<Location>>.Failure(locations.Error);
+            }
+
+            return Result<List<Location>>.Success(locations.Value!);
+        }
     }
 }

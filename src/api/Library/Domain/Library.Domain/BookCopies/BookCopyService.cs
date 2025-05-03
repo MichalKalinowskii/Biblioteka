@@ -129,5 +129,12 @@ namespace Library.Domain.BookCopies
             await unitOfWork.CommitAsync(cancellationToken);
             return Result.Success();
         }
+
+        public async Task<Result<Dictionary<Guid, List<Guid>>>> GetLocationIdsByBookId(List<Guid> bookIds, CancellationToken cancellationToken)
+        {
+            
+
+            return null;
+        }
     }
 }

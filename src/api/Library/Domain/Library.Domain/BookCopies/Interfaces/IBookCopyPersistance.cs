@@ -17,5 +17,7 @@ namespace Library.Domain.BookCopies.Interfaces
         Task<Result<List<Guid>>> IsAnyNonExistingBookCopyInGivenListAsync(List<Guid> bookIds, CancellationToken cancellationToken);
 
         Task<Result<BookCopy>> GetBookCopyByIdAsync(Guid bookId, CancellationToken cancellationToken);
+
+        Task<Result<Dictionary<Guid, List<Guid>>>> GetLocationIdsByBookId(List<Guid> bookIds, CancellationToken cancellationToken);
     }
 }
