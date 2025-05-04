@@ -18,6 +18,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Library.Domain.Books;
 using Library.Domain.BookCopies;
+using Library.Domain.Locations;
+using Library.Infrastructure.Domain.Locations;
 
 namespace Library.Infrastructure;
 
@@ -27,7 +29,6 @@ public static class Registration
     {
         if (isDevelopment)
         {
-            var test = configuration.GetConnectionString("SqlDockerDevelopmentConnection");
             services.AddDbContext<LibraryContext>(options =>
                 options.UseNpgsql(configuration.GetConnectionString("SqlDockerDevelopmentConnection")));
         }
@@ -54,6 +55,7 @@ public static class Registration
         services.AddScoped<BookCopyService>();
         services.AddScoped<BookService>();
         services.AddScoped<AuthorService>();
+        services.AddScoped<LocationService>();
     }
     
     private static void AddRepositories(this IServiceCollection services)
@@ -63,5 +65,6 @@ public static class Registration
         services.AddScoped<IBookPersistence, BookRepository>();
         services.AddScoped<IAuthorPersistance, AuthorRepository>();
         services.AddScoped<IBookCopyPersistance, BookCopyRepository>();
+        services.AddScoped<ILocationPersistance, LocationRepository>();
     }
 }
