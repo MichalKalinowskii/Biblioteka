@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Identity;
 using Library.Domain.Books;
 using Library.Domain.BookCopies;
 using Library.Domain.Books.Models;
-using Library.Domain.Books.Entites;
 using Library.Domain.BookCopies.Models;
 using Library.Domain.Clients;
 using Library.Domain.Rentals;
@@ -110,44 +109,32 @@ namespace Library.Infrastructure.Data
 
         private async Task AddBooks()
         {
-            var book1 = new BookEntity
-            {
-                Title = "Book 1",
-                TitlePageImageUrl = "https://example.com/book1.jpg",
-                Genre = Genre.Comedy,
-                ReleaseDate = DateTime.UtcNow,
-                Description = "Description of Book 1",
-                ISBN = "1234567890123",
-                Publisher = "PAKA",
-            };
+            await _bookService.AddNewBookAsync("PAKA",
+                "Book 1",
+                "https://example.com/book1.jpg",
+                DateTime.Now,
+                "Description of Book 1",
+                "1234567890123",
+                Genre.Comedy,             
+                new CancellationToken());
 
-            await _bookService.AddNewBookAsync(book1, new CancellationToken());
+            await _bookService.AddNewBookAsync("PAKA",
+                "Book 2",
+                "https://example.com/book2.jpg",
+                DateTime.Now,
+                "Description of Book 2",
+                "1234567890124",
+                Genre.Horror,
+                new CancellationToken());
 
-            var book2 = new BookEntity
-            {
-                Title = "Book 2",
-                TitlePageImageUrl = "https://example.com/book2.jpg",
-                Genre = Genre.Horror,
-                ReleaseDate = DateTime.UtcNow,
-                Description = "Description of Book 2",
-                ISBN = "1234567890124",
-                Publisher = "PAKA",
-            };
-
-            await _bookService.AddNewBookAsync(book2, new CancellationToken());
-
-            var book3 = new BookEntity
-            {
-                Title = "Book 3",
-                TitlePageImageUrl = "https://example.com/book3.jpg",
-                Genre = Genre.Romance,
-                ReleaseDate = DateTime.UtcNow,
-                Description = "Description of Book 3",
-                ISBN = "1234567890125",
-                Publisher = "PAKA",
-            };
-
-            await _bookService.AddNewBookAsync(book3, new CancellationToken());
+            await _bookService.AddNewBookAsync("PAKA",
+                "Book 3",
+                "https://example.com/book3.jpg",
+                DateTime.Now,
+                "Description of Book 3",
+                "1234567890125",
+                Genre.Romance,
+                new CancellationToken());
         }
 
         private async Task<List<BookCopy>> AddBookCopies()

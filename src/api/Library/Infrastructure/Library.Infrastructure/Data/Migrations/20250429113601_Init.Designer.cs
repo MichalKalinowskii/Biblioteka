@@ -3,6 +3,7 @@ using System;
 using Library.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Library.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    partial class LibraryContextModelSnapshot : ModelSnapshot
+    [Migration("20250429113601_Init")]
+    partial class Init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,52 +24,6 @@ namespace Library.Infrastructure.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("Library.Domain.Authors.Models.Author", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("DateOfDeath")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Authors");
-                });
-
-            modelBuilder.Entity("Library.Domain.Authors.Models.AuthorBook", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("AuthorId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("BookId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AuthorId");
-
-                    b.HasIndex("BookId");
-
-                    b.ToTable("AuthorBooks");
-                });
 
             modelBuilder.Entity("Library.Domain.BookCopies.Models.BookCopy", b =>
                 {
@@ -105,6 +62,33 @@ namespace Library.Infrastructure.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("BookCopyStatuses");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Available"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Reserved"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Lost"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Damaged"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Unavailable"
+                        });
                 });
 
             modelBuilder.Entity("Library.Domain.Books.Models.Book", b =>
@@ -214,30 +198,6 @@ namespace Library.Infrastructure.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Clients", (string)null);
-                });
-
-            modelBuilder.Entity("Library.Domain.Locations.Models.Location", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("Level")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Shell")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Zone")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Locations");
                 });
 
             modelBuilder.Entity("Library.Domain.Rentals.BookRental", b =>
@@ -517,21 +477,6 @@ namespace Library.Infrastructure.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("Library.Domain.Authors.Models.AuthorBook", b =>
-                {
-                    b.HasOne("Library.Domain.Authors.Models.Author", null)
-                        .WithMany()
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Library.Domain.Books.Models.Book", null)
-                        .WithMany()
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Library.Domain.BookCopies.Models.BookCopy", b =>

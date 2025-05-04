@@ -1,5 +1,4 @@
 ﻿using Library.Domain.Books;
-using Library.Domain.Books.Entites;
 using Library.Domain.Books.Interfaces;
 using Library.Domain.SeedWork;
 using Moq;

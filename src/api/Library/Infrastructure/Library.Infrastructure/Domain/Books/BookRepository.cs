@@ -1,4 +1,3 @@
-using Library.Domain.Books.Entites;
 using Library.Domain.Books.Errors;
 using Library.Domain.Books.Interfaces;
 using Library.Domain.Books.Models;
@@ -31,6 +30,37 @@ public class BookRepository : IBookPersistence
         return result;
     }
 
+    public async Task<Result<List<Book>>> GetAllBooksByGenreId(int genreId, CancellationToken cancellationToken)
+    {
+        Result<List<Book>> result = default;
+        try
+        {
+            var books = await bookContext.Where(x => x.Genre.Id == genreId).ToListAsync(cancellationToken);
+            result = Result<List<Book>>.Success(books);
+        }
+        catch (Exception ex)
+        {
+            result = Result<List<Book>>.Failure(new Error("BookRepository.GetAllBooksByGenreId", ex.Message));
+        }
+        return result!;
+    }
+
+    public async Task<Result<List<Book>>> GetAllBooks(CancellationToken cancellationToken)
+    {
+        Result<List<Book>> result = default;
+        try
+        {
+            var books = await bookContext.ToListAsync(cancellationToken);
+            result = Result<List<Book>>.Success(books);
+        }
+        catch(Exception ex)
+        {
+            result = Result<List<Book>>.Failure(new Error("BookRepository.GetAllBooksWithLocation", ex.Message));
+        }
+
+        return result;
+    }
+
     public async Task<Result<Book>> GetBookByISBN(string ISBN, CancellationToken cancellationToken)
     {
         Result<Book> result = default;
@@ -46,6 +76,23 @@ public class BookRepository : IBookPersistence
         }
 
         return result!;
+    }
+
+    public async Task<Result<List<Book>>> GetBooksByTitle(string title, CancellationToken cancellationToken)
+    {
+        Result<List<Book>> result = default;
+
+        try
+        {
+            var books = await bookContext.Where(x => x.Title.Contains(title)).ToListAsync(cancellationToken);
+            result = Result<List<Book>>.Success(books);
+        }
+        catch (Exception ex) 
+        {
+            result = Result<List<Book>>.Failure(new Error("BookRepository.GetBooksByTitle", ex.Message));
+        }
+
+        return result;
     }
 
     public async Task<Result<Book>> GetByIdAsync(Guid id, CancellationToken cancellationToken)

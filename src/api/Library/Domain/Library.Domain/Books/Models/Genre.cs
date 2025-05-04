@@ -39,7 +39,23 @@ namespace Library.Domain.Books.Models
                 4 => Horror,
                 5 => Romance,
                 6 => SinceFiction,
-                _ => throw new ArgumentException("Invalid status value")
+                _ => default!
+            };
+        }
+
+        public static Genre FromName(string name)
+        {
+            string genreName = (name ?? string.Empty).Trim().ToLower();
+
+            return genreName switch
+            {
+                "comedy" => Comedy,
+                "thriller" => Thriller,
+                "drama" => Drama,
+                "horror" => Horror,
+                "romance" => Romance,
+                "sincefiction" => SinceFiction,
+                _ => default!
             };
         }
     }
