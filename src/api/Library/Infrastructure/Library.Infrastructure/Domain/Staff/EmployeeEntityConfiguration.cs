@@ -11,7 +11,7 @@ public class EmployeeEntityConfiguration : IEntityTypeConfiguration<Employee>
     {
         builder.ToTable("Employees");
         
-        builder.HasKey(x => x.Id);
+        builder.HasKey(x => x.UserId);
         
         builder.HasOne<ApplicationUser>()
             .WithOne()

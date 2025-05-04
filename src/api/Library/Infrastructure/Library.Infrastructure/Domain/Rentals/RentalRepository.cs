@@ -26,10 +26,16 @@ public class RentalRepository : IRentalRepository
         await _rentals.AddAsync(rental, cancellationToken);
     }
 
-    public Task<List<Rental>> GetAsync(CancellationToken cancellationToken)
+    public Task<List<Rental>> GetAsync(Guid libraryCardId, CancellationToken cancellationToken)
     {
-        return _rentals
-            .Include(x => x.BookRentals)
+        var query = _rentals.Include(x => x.BookRentals).AsQueryable();
+
+        if (libraryCardId != Guid.Empty)
+        {
+            query = query.Where(x => x.LibraryCardId == libraryCardId);
+        }
+        
+        return query
             .ToListAsync(cancellationToken);
     }
 }

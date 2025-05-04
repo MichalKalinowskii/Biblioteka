@@ -6,5 +6,5 @@ public interface IRentalRepository
     
     public Task AddAsync(Rental rental, CancellationToken cancellationToken);
     
-    public Task<List<Rental>> GetAsync(CancellationToken cancellationToken);
+    public Task<List<Rental>> GetAsync(Guid libraryCardId,CancellationToken cancellationToken);
 }

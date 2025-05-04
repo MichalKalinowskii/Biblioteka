@@ -8,7 +8,7 @@ public class Rental
     
     public Guid LibraryCardId { get; private set; }
     
-    public int EmployeeId { get; private set; }
+    public Guid EmployeeId { get; private set; }
     
     public DateTime RentalDate { get; private set; }
     
@@ -18,7 +18,7 @@ public class Rental
     
     public List<BookRental> BookRentals {get; private set;}
     
-    internal Rental(Guid libraryCardId, int employeeId, DateTime returnDate)
+    internal Rental(Guid libraryCardId, Guid employeeId, DateTime returnDate)
     {
         BookRentals = new List<BookRental>();
         LibraryCardId = libraryCardId;
@@ -28,7 +28,7 @@ public class Rental
         Status = RentalStatus.InProgress;
     }
 
-    public static Result<Rental> Create(Guid libraryCardId, int employeeId, List<Guid> bookCopyIds, DateTime returnDate)
+    public static Result<Rental> Create(Guid libraryCardId, Guid employeeId, List<Guid> bookCopyIds, DateTime returnDate)
     {
         if (libraryCardId == default)
         {

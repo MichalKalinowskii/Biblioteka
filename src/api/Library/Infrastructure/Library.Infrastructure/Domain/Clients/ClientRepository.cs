@@ -12,7 +12,12 @@ public class ClientRepository : IClientRepository
     {
         _clients = context.Set<Client>();
     }
-    
+
+    public async Task<IEnumerable<Client>> GetAllAsync(CancellationToken cancellationToken)
+    {
+        return await _clients.ToListAsync(cancellationToken);
+    }
+
     public async Task<bool> LibraryCardExistsAsync(Guid libraryCardId, CancellationToken cancellationToken)
     {
         return await _clients.AnyAsync(x => x.LibraryCardId == libraryCardId, cancellationToken);
