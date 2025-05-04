@@ -1,9 +1,12 @@
-﻿using Library.Application.Book;
+﻿using Library.Application.Books;
 using Library.Domain.BookCopies;
 using Library.Domain.Books;
+using Library.Domain.Books.Models;
 using Library.Domain.Locations;
+using Library.Domain.SeedWork;
+using Microsoft.AspNetCore.Http.HttpResults;
 
-namespace Library.Api.Endpoints.Book
+namespace Library.Api.Endpoints.Books
 {    public class GetAllBooksWithLocation : IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)

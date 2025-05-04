@@ -26,9 +26,10 @@ public class RentalRepository : IRentalRepository
         await _rentals.AddAsync(rental, cancellationToken);
     }
 
-    public Task<List<Rental>> GetAsync(Guid libraryCardId, CancellationToken cancellationToken)
+    public Task<List<Rental>> GetActiveRentalsAsync(Guid libraryCardId, CancellationToken cancellationToken)
     {
-        var query = _rentals.Include(x => x.BookRentals).AsQueryable();
+        var query = _rentals.Include(x => x.BookRentals).
+            Where(x => x.Status != RentalStatus.Returned).AsQueryable();
 
         if (libraryCardId != Guid.Empty)
         {

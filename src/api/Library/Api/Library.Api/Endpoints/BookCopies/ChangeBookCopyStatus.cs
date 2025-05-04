@@ -1,15 +1,17 @@
 ﻿using Library.Application.BookCopy;
 using Library.Domain.BookCopies;
 using Library.Domain.BookCopies.Models;
+using Library.Domain.SeedWork;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Library.Api.Endpoints.BookCopy
+namespace Library.Api.Endpoints.BookCopies
 {
     public class ChangeBookCopyStatus : IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("bookcopy/changestatus", async ([FromBody] BookCopyStatusDto bookCopyStatusDto, BookCopyService bookService, CancellationToken cancellationToken) =>
+            app.MapPost("bookcopy/changestatus", async Task<Results<Ok, BadRequest<Result>>> ([FromBody] BookCopyStatusDto bookCopyStatusDto, BookCopyService bookService, CancellationToken cancellationToken) =>
             {
                 var bookCopyStatus = BookCopyStatus.FromName(bookCopyStatusDto.bookCopyStatusName);
 
@@ -19,9 +21,9 @@ namespace Library.Api.Endpoints.BookCopy
 
                 if (result.IsFailure)
                 {
-                    return Results.BadRequest(result);
+                    return TypedResults.BadRequest(result);
                 }
-                return Results.Ok();
+                return TypedResults.Ok();
             }).WithTags(Tags.BookCopy);
         }
     }

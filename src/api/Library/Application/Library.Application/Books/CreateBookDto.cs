@@ -1,4 +1,4 @@
-﻿namespace Library.Application.Book;
+﻿namespace Library.Application.Books;
 
 public record CreateBookDto(string publisher,
     string title,

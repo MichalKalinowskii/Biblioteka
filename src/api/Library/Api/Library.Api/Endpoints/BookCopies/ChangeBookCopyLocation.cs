@@ -1,14 +1,16 @@
 ﻿using Library.Application.BookCopy;
 using Library.Domain.BookCopies;
+using Library.Domain.SeedWork;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Library.Api.Endpoints.BookCopy
+namespace Library.Api.Endpoints.BookCopies
 {
     public class ChangeBookCopyLocation : IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("bookcopy/changelocation", async ([FromBody] BookCopyLocationDto bookCopyDto, BookCopyService bookService, CancellationToken cancellationToken) =>
+            app.MapPost("bookcopy/changelocation", async Task<Results<Ok, BadRequest<Result>>> ([FromBody] BookCopyLocationDto bookCopyDto, BookCopyService bookService, CancellationToken cancellationToken) =>
             {
                 var result = await bookService.ChangeBookCopyLocation(bookCopyDto.bookId,
                     bookCopyDto.LocationId,
@@ -16,9 +18,9 @@ namespace Library.Api.Endpoints.BookCopy
 
                 if (result.IsFailure)
                 {
-                    return Results.BadRequest(result);
+                    return TypedResults.BadRequest(result);
                 }
-                return Results.Ok();
+                return TypedResults.Ok();
             }).WithTags(Tags.BookCopy);
         }
     }

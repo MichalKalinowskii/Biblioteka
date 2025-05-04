@@ -1,15 +1,17 @@
-﻿using Library.Application.Book;
+﻿using Library.Application.Books;
 using Library.Domain.Books;
 using Library.Domain.Books.Models;
+using Library.Domain.SeedWork;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Library.Api.Endpoints.Book
+namespace Library.Api.Endpoints.Books
 {
     public class ChangeBookGenre : IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("book/changegenre", async ([FromBody] BookGenreDto bookGenreDto, BookService bookService, CancellationToken cancellationToken) =>
+            app.MapPost("book/changegenre", async Task<Results<Ok<Result>, BadRequest<Result>>> ([FromBody] BookGenreDto bookGenreDto, BookService bookService, CancellationToken cancellationToken) =>
             {
                 var result = await bookService.ChangeBookGenreAsync(bookGenreDto.ISBN,
                     Genre.FromName(bookGenreDto.genreName),
@@ -17,9 +19,10 @@ namespace Library.Api.Endpoints.Book
                     
                 if (result.IsFailure)
                 {
-                    return Results.BadRequest(result);
+                    return TypedResults.BadRequest(result);
                 }
-                return Results.Ok();
+                
+                return TypedResults.Ok(result);
             }).WithTags(Tags.Books);
         }
     }
