@@ -22,13 +22,19 @@ namespace Library.Infrastructure.Authentication
 
         public string? Role => _user?.FindFirst(ClaimTypes.Role)?.Value;
 
+        public Guid? LibraryCardId {
+            get
+            {
+                return Guid.TryParse(_user?.FindFirst("libraryCard_id")?.Value, out var guid) ? guid : (Guid?)null;
+            }
+        }
+
+        
         public Guid? UserId
         {
             get
             {
-
-                Guid.TryParse(_user?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var guidd);
-                return Guid.TryParse(_user?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var guid) ? guid : (Guid?)null;
+                return Guid.TryParse(_user?.FindFirst("user_id")?.Value, out var guid) ? guid : (Guid?)null;
             }
         }
 

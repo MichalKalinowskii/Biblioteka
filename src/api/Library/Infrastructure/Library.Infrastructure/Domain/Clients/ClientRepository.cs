@@ -13,8 +13,18 @@ public class ClientRepository : IClientRepository
         _clients = context.Set<Client>();
     }
     
-    public async Task<bool> LibraryCardExistsAsync(Guid libraryCardId)
+    public async Task<bool> LibraryCardExistsAsync(Guid libraryCardId, CancellationToken cancellationToken)
     {
-        return await _clients.AnyAsync(x => x.LibraryCardId == libraryCardId);
+        return await _clients.AnyAsync(x => x.LibraryCardId == libraryCardId, cancellationToken);
+    }
+
+    public async Task<Client?> GetByIdAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        return await _clients.FirstOrDefaultAsync(x => x.UserId == userId, cancellationToken);
+    }
+
+    public async Task AddAsync(Client client, CancellationToken cancellationToken)
+    {
+        await _clients.AddAsync(client, cancellationToken);
     }
 }

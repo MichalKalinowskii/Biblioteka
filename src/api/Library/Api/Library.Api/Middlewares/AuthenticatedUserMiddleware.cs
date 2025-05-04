@@ -15,11 +15,11 @@ namespace Library.Api.Middlewares
         {
             if (context.User.Identity?.IsAuthenticated == true)
             {
-                var userId = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                var email = context.User.FindFirst(ClaimTypes.Role)?.Value;
+                var userId = context.User.FindFirst("user_id")?.Value;
+                var userRole = context.User.FindFirst("user_role")?.Value;
 
                 // Możesz tutaj zalogować, przekazać dalej, sprawdzić uprawnienia itp.
-                Console.WriteLine($"Użytkownik ID: {userId}, Email: {email}");
+                Console.WriteLine($"Użytkownik ID: {userId}, Rola: {userRole}");
             }
 
             await _next(context);

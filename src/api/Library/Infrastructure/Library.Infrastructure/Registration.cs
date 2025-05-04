@@ -61,6 +61,7 @@ public static class Registration
         services.AddScoped<BookCopyService>();
         services.AddScoped<BookService>();
         services.AddScoped<AuthorService>();
+        services.AddScoped<ClientService>();
     }
     
     private static void AddRepositories(this IServiceCollection services)

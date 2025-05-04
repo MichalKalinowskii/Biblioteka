@@ -4,6 +4,7 @@
     {
         Guid? UserId { get; }
         string? Role { get; }
+        Guid? LibraryCardId { get; }
         string? GetClaim(string claimType);
     }
 }
