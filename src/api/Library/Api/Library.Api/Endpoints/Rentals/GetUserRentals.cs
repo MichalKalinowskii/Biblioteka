@@ -18,38 +18,30 @@ namespace Library.Api.Endpoints.Rentals
                     CancellationToken cancellationToken) =>
                 {
                     Guid? libraryCardId = authenticatedUserService.LibraryCardId;
-
-                    var parameters = new
-                    {
-                        LibraryCardId = libraryCardId
-                    };
-
-                    var builder = new SqlBuilder();
-
-                    var template = builder.AddTemplate(@"
-                                          SELECT 
-                                        rentals.""Id"" AS RentalId,
-                                        rentals.""RentalDate"" AS RentalDate,
-                                        rentals.""ReturnDate"" AS ReturnDate,
-                                        bookCopies.""Id"" AS BookCopyId,
-                                        books.""Title"" AS BookTitle,
-                                        books.""Description"" AS BookDescription
-                                        FROM ""Rentals"" rentals
-                                        JOIN ""BookRentals"" bookRentals ON bookRentals.""RentalId"" = rentals.""Id""
-                                        JOIN ""BookCopies"" bookCopies ON bookCopies.""Id"" = bookRentals.""BookCopyId""
-                                        JOIN ""Books"" books ON bookCopies.""BookId"" = books.""Id""
-                                          /**where**/
-                                         ");
                     
-                    builder.Where(@"rentals.""LibraryCardId"" = @LibraryCardId", new { LibraryCardId = libraryCardId });
-
+                    string sql = @"
+                    SELECT 
+                        rentals.""Id"" AS RentalId,
+                        rentals.""RentalDate"" AS RentalDate,
+                        rentals.""ReturnDate"" AS ReturnDate,
+                        rentals.""Status"" AS Status,
+                        bookCopies.""Id"" AS BookCopyId,
+                        books.""Title"" AS BookTitle,
+                        books.""Description"" AS BookDescription
+                    FROM ""Rentals"" rentals
+                    JOIN ""BookRentals"" bookRentals ON bookRentals.""RentalId"" = rentals.""Id""
+                    JOIN ""BookCopies"" bookCopies ON bookCopies.""Id"" = bookRentals.""BookCopyId""
+                    JOIN ""Books"" books ON bookCopies.""BookId"" = books.""Id""
+                    WHERE rentals.""LibraryCardId"" = @LibraryCardId
+                    AND rentals.""Status"" = ANY (@RentalStatuses)";
+                    
                     int[] statuses = { (int)RentalStatus.InProgress, (int)RentalStatus.PartiallyReturned };
                     
-                    builder.Where(@"rentals.""Status"" IN @RentalStatuses", statuses);
+                    var parameters = new { LibraryCardId = libraryCardId, RentalStatuses = statuses };
 
                     var connection = sqlConnectionFactory.GetOpenConnection();
 
-                    var results = await connection.QueryAsync<RentalDto>(template.RawSql, parameters);
+                    var results = await connection.QueryAsync<RentalDto>(sql, parameters);
 
                     return results.Any() ? TypedResults.Ok(results) : TypedResults.NotFound();
                 })
