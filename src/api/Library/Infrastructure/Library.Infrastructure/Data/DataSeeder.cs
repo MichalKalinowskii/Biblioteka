@@ -18,6 +18,7 @@ namespace Library.Infrastructure.Data
         private LibraryContext _dbContext;
         private PasswordHasher<ApplicationUser> _passwordHasher;
         private UserManager<ApplicationUser> _userManager;
+        private RoleManager<IdentityRole<Guid>> _roleManager;
         private BookService _bookService;
         private BookCopyService _bookCopyService;
 
@@ -29,6 +30,8 @@ namespace Library.Infrastructure.Data
             _userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             _bookService =  scope.ServiceProvider.GetRequiredService<BookService>();
             _bookCopyService = scope.ServiceProvider.GetRequiredService<BookCopyService>();
+            _roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+           
 
             await SeedData();
         }
@@ -65,8 +68,8 @@ namespace Library.Infrastructure.Data
             {
                 Id = Guid.NewGuid(),
                 Email = userEmail,
-                FirstName = "Test",
-                LastName = "User",
+                FirstName = "Employee",
+                LastName = "Test",
                 NormalizedEmail = userEmail.ToUpper(),
                 UserName = "testuser1@example.com",
                 PasswordHash = _passwordHasher.HashPassword(default, userPassword)
@@ -79,8 +82,8 @@ namespace Library.Infrastructure.Data
             {
                 Id = Guid.NewGuid(),
                 Email = user2Email,
-                FirstName = "Test",
-                LastName = "User",
+                FirstName = "ClientA",
+                LastName = "Test",
                 NormalizedEmail = user2Email.ToUpper(),
                 UserName = "testuser2@example.com",
                 PasswordHash = _passwordHasher.HashPassword(default, user2Password)
@@ -93,8 +96,8 @@ namespace Library.Infrastructure.Data
             {
                 Id = Guid.NewGuid(),
                 Email = user3Email,
-                FirstName = "Test",
-                LastName = "User",
+                FirstName = "ClientB",
+                LastName = "Test",
                 NormalizedEmail = user3Email.ToUpper(),
                 UserName = "testuser3@example.com",
                 PasswordHash = _passwordHasher.HashPassword(default, user3Password)
@@ -192,12 +195,16 @@ namespace Library.Infrastructure.Data
         private async Task<List<Employee>> AddEmployees(List<ApplicationUser> applicationUsers)
         {
             List<Employee> employees = new List<Employee>();
-            
+
+            await _roleManager.CreateAsync(new IdentityRole<Guid>("Employee"));
+
             employees.Add(Employee.Create(applicationUsers[0].Id).Value);
             
             await _dbContext.Set<Employee>().AddRangeAsync(employees);
             
             await _dbContext.SaveChangesAsync();
+
+            await _userManager.AddToRoleAsync(applicationUsers[0], "Employee");
             
             return employees;
         }
@@ -205,14 +212,19 @@ namespace Library.Infrastructure.Data
         private async Task<List<Client>> AddClients(List<ApplicationUser> applicationUsers)
         {
             List<Client> clients = new List<Client>();
-            
+
+            await _roleManager.CreateAsync(new IdentityRole<Guid>("Client"));
+
             clients.Add(Client.Create(applicationUsers[1].Id, Guid.NewGuid()).Value);
             clients.Add(Client.Create(applicationUsers[2].Id, Guid.NewGuid()).Value);
             
             await _dbContext.Set<Client>().AddRangeAsync(clients);
             
             await _dbContext.SaveChangesAsync();
-            
+
+            await _userManager.AddToRoleAsync(applicationUsers[1], "Client");
+            await _userManager.AddToRoleAsync(applicationUsers[2], "Client");
+
             return clients;
         }
 
@@ -220,7 +232,7 @@ namespace Library.Infrastructure.Data
         {
             List<Rental> rentals = new List<Rental>();
             
-            var rental = Rental.Create(clients[0].LibraryCardId, employees[0].Id, new List<Guid>
+            var rental = Rental.Create(clients[0].LibraryCardId, employees[0].UserId, new List<Guid>
             {
                 bookCopies[0].Id,
                 bookCopies[3].Id
@@ -228,7 +240,7 @@ namespace Library.Infrastructure.Data
 
             rentals.Add(rental.Value);
 
-            rental = Rental.Create(clients[1].LibraryCardId, employees[0].Id, new List<Guid>
+            rental = Rental.Create(clients[1].LibraryCardId, employees[0].UserId, new List<Guid>
             {
                 bookCopies[4].Id,
                 bookCopies[7].Id

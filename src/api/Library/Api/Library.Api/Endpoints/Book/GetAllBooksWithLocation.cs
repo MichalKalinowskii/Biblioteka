@@ -4,8 +4,7 @@ using Library.Domain.Books;
 using Library.Domain.Locations;
 
 namespace Library.Api.Endpoints.Book
-{
-    public class GetAllBooksWithLocation : IEndpoint
+{    public class GetAllBooksWithLocation : IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
@@ -20,7 +19,7 @@ namespace Library.Api.Endpoints.Book
 
                     var bookIdLocationIds = await bookCopyService
                         .GetLocationIdsByBookId(books.Value.Select(x => x.Id).ToList(), 
-                        cancalationToken);
+                            cancalationToken);
                     if (bookIdLocationIds.IsFailure)
                     {
                         return Results.BadRequest(bookIdLocationIds);

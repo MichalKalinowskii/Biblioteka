@@ -16,9 +16,9 @@ public class RentalService
         _clientRepository = clientRepository;
     }
     
-    public async Task<Result<Rental>> CreateRentalAsync(Guid libraryCardId, int employeeId, List<Guid> bookCopyIds, DateTime returnDate, CancellationToken cancellationToken)
+    public async Task<Result<Rental>> CreateRentalAsync(Guid libraryCardId, Guid employeeId, List<Guid> bookCopyIds, DateTime returnDate, CancellationToken cancellationToken)
     {
-        if (!await _clientRepository.LibraryCardExistsAsync(libraryCardId))
+        if (!await _clientRepository.LibraryCardExistsAsync(libraryCardId, cancellationToken))
         {
             return Result<Rental>.Failure(RentalErrors.InvalidLibraryCard());
         }

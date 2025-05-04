@@ -1,5 +1,6 @@
 using Library.Application.Authentication.Login;
 using Library.Application.Authentication.Register;
+using Library.Domain.Clients;
 using Library.Domain.SeedWork;
 using Library.Infrastructure.Authentication;
 using Microsoft.AspNetCore.Identity;
@@ -9,15 +10,21 @@ namespace Library.Application.Authentication;
 public class AuthenticationService
 {
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IClientRepository _clientRepository;
     private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly ClientService _clientService;
     private readonly JwtTokenService _jwtTokenService;
 
     public AuthenticationService(UserManager<ApplicationUser> userManager,
+        IClientRepository clientRepository,
         SignInManager<ApplicationUser> signInManager,
+        ClientService clientService,
         JwtTokenService jwtTokenService)
     {
         _userManager = userManager;
+        _clientRepository = clientRepository;
         _signInManager = signInManager;
+        _clientService = clientService;
         _jwtTokenService = jwtTokenService;
     }
     
@@ -51,6 +58,8 @@ public class AuthenticationService
         {
             return Result.Failure(AuthenticationErrors.FailedUserCreation(creationResult.Errors.Select(x => x.Description).ToArray()));
         }
+        
+        await _clientService.AddAsync(applicationUser.Id, cancellationToken);
 
         return Result.Success();
     }
@@ -75,14 +84,30 @@ public class AuthenticationService
             return Result<LoginResponseDto>.Failure(AuthenticationErrors.InvalidEmailOrPassword());
         }
 
+        IList<string> roles = await _userManager.GetRolesAsync(applicationUser);
+
         SignInResult signInResult = await _signInManager.CheckPasswordSignInAsync(applicationUser, loginRequestDto.Password, false);
 
         if (!signInResult.Succeeded)
         {
             return Result<LoginResponseDto>.Failure(AuthenticationErrors.InvalidEmailOrPassword());
         }
+        
+        string userRole = roles.First();
 
-        string token = _jwtTokenService.GenerateToken(applicationUser);
+        string token = string.Empty;
+        
+        if (userRole == "Client")
+        {
+            var client = await _clientRepository.GetByIdAsync(applicationUser.Id, cancellationToken);
+            
+            token = _jwtTokenService.GenerateClientToken(applicationUser, userRole, client.LibraryCardId);
+        }
+        else
+        {
+            token = _jwtTokenService.GenerateToken(applicationUser, userRole);
+        }
+        
 
         return Result<LoginResponseDto>.Success(new LoginResponseDto(token));
     }

@@ -11,6 +11,10 @@ internal static class AuthenticationConfiguration
     {
         var jwtSettings = configuration.GetSection("Jwt");
 
+        services.AddAuthorizationBuilder()
+            .AddPolicy("client", policy => policy.RequireClaim("user_role", "Client"))
+            .AddPolicy("employee", policy => policy.RequireClaim("user_role", "Employee"));
+        
         services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

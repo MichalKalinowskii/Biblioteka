@@ -19,6 +19,7 @@ public class ReturnBooks : IEndpoint
 
                 return Results.Ok();
             })
+            .RequireAuthorization("employee")
             .WithTags(Tags.Rentals);
     }
 }
