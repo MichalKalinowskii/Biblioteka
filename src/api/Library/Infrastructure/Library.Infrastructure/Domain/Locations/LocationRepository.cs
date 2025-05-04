@@ -31,4 +31,23 @@ public class LocationRepository : ILocationPersistance
 
         return result!;
     }
+
+    public async Task<Result<List<Location>>> GetLocationByIdsAsync(List<Guid> locationIds, CancellationToken cancellationToken)
+    {
+        Result<List<Location>> result = default;
+
+        try
+        {
+            var locations = await locationContext
+                .Where(x => locationIds.Contains(x.Id))
+                .ToListAsync(cancellationToken);
+            result = Result<List<Location>>.Success(locations);
+        }
+        catch (Exception ex)
+        {
+            result = Result<List<Location>>.Failure(new Error("LocationRepository.GetLocationByIdsAsync", ex.Message));
+        }
+
+        return result!;
+    }
 }

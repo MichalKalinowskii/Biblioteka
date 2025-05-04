@@ -3,6 +3,7 @@ using Library.Domain.BookCopies.Models;
 using Library.Domain.SeedWork;
 using Library.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace Library.Infrastructure.Domain.BookCopies
 {
@@ -86,6 +87,28 @@ namespace Library.Infrastructure.Domain.BookCopies
             }
 
             return result;
+        }
+
+        public async Task<Result<Dictionary<Guid, List<Guid>>>> GetLocationIdsByBookId(List<Guid> bookIds, CancellationToken cancellationToken)
+        {
+            Result<Dictionary<Guid, List<Guid>>> result = default;
+
+            try
+            {
+                var bookLocations = await bookCopyContext
+                    .AsNoTracking()
+                    .Where(b => bookIds.Contains(b.Id))
+                    .GroupBy(x => x.BookId)
+                    .ToDictionaryAsync(b => b.Key, l => l.Select(x => x.LocationId).ToList(), cancellationToken);
+
+                result = Result<Dictionary<Guid, List<Guid>>>.Success(bookLocations);
+            }
+            catch(Exception ex)
+            {
+                result = Result<Dictionary<Guid, List<Guid>>>.Failure(new Error("BookCopyRepository.GetLocationIdsByBookId", ex.Message));
+            }
+
+            return result!;
         }
     }
 }

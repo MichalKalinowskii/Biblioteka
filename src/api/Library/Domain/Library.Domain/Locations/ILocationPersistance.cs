@@ -11,5 +11,6 @@ namespace Library.Domain.Locations
     public interface ILocationPersistance
     {
         Task<Result> AddLocationAsync(Location location, CancellationToken cancellationToken);
+        Task<Result<List<Location>>> GetLocationByIdsAsync(List<Guid> locationIds, CancellationToken cancellationToken);
     }
 }

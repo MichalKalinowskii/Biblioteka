@@ -18,6 +18,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Library.Domain.Books;
 using Library.Domain.BookCopies;
+using Library.Domain.Locations;
+using Library.Infrastructure.Domain.Locations;
 
 namespace Library.Infrastructure;
 
@@ -61,6 +63,7 @@ public static class Registration
         services.AddScoped<BookCopyService>();
         services.AddScoped<BookService>();
         services.AddScoped<AuthorService>();
+        services.AddScoped<LocationService>();
         services.AddScoped<ClientService>();
     }
     
@@ -71,5 +74,6 @@ public static class Registration
         services.AddScoped<IBookPersistence, BookRepository>();
         services.AddScoped<IAuthorPersistance, AuthorRepository>();
         services.AddScoped<IBookCopyPersistance, BookCopyRepository>();
+        services.AddScoped<ILocationPersistance, LocationRepository>();
     }
 }
