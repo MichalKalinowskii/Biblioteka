@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Library.Application.BookCopy;
 using Library.Application.Rentals;
 using Library.Domain.Rentals;
 using Library.Domain.SeedWork;
@@ -12,7 +13,7 @@ namespace Library.Api.Endpoints.Rentals
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapGet("rentals/get-user-rentals", async Task<Results<Ok<IEnumerable<RentalDto>>, NotFound>> (
+            app.MapGet("rentals/get-user-rentals", async Task<Results<Ok<List<RentalDto>>, NotFound>> (
                     [FromServices] SqlConnectionFactory sqlConnectionFactory,
                     [FromServices] IAuthenticatedUserService authenticatedUserService,
                     CancellationToken cancellationToken) =>
@@ -41,9 +42,27 @@ namespace Library.Api.Endpoints.Rentals
 
                     var connection = sqlConnectionFactory.GetOpenConnection();
 
-                    var results = await connection.QueryAsync<RentalDto>(sql, parameters);
+                    var rentalDict = new Dictionary<int, RentalDto>();
+                    
+                    var results = await connection.QueryAsync<RentalDto, BookCopyDto, RentalDto>(sql,
+                        (rental, bookCopy) =>
+                        {
+                            if (!rentalDict.TryGetValue(rental.RentalId, out var existingRental))
+                            {
+                                existingRental = rental;
+                                existingRental.BookCopies = new List<BookCopyDto>();
+                                rentalDict.Add(rental.RentalId, existingRental);
+                            }
 
-                    return results.Any() ? TypedResults.Ok(results) : TypedResults.NotFound();
+                            if (!existingRental.BookCopies.Any(b => b.Id == bookCopy.Id))
+                            {
+                                existingRental.BookCopies.Add(bookCopy);
+                            }
+
+                            return existingRental;
+                        }, parameters, splitOn: "BookCopyId");
+
+                    return rentalDict.Values.Any() ?  TypedResults.Ok(rentalDict.Values.ToList()) : TypedResults.NotFound();
                 })
                 .RequireAuthorization("client")
                 .WithDescription("Client - pobieranie listy zalegających wypożyczeń.")
