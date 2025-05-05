@@ -110,5 +110,26 @@ namespace Library.Infrastructure.Domain.BookCopies
 
             return result!;
         }
+
+        public async Task<Result<Dictionary<Guid, List<Guid>>>> GetBookIdsByLocationId(Guid locationId, CancellationToken cancellationToken)
+        {
+            Result<Dictionary<Guid, List<Guid>>> result = default;
+
+            try
+            {
+                var dictionary = await bookCopyContext
+                    .AsNoTracking()
+                    .Where(l => l.LocationId == locationId)
+                    .GroupBy(x => x.LocationId)
+                    .ToDictionaryAsync(l => l.Key, b => b.Select(x => x.BookId).ToList(), cancellationToken);
+                result = Result<Dictionary<Guid, List<Guid>>>.Success(dictionary);
+            }
+            catch(Exception ex)
+            {
+                result = Result<Dictionary<Guid, List<Guid>>>.Failure(new Error("BookCopyRepository.GetBookIdsByLocationId", ex.Message));
+            }
+
+            return result!;
+        }
     }
 }

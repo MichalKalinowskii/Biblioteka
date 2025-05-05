@@ -9,6 +9,7 @@ public class Location
     public int Zone { get; set; }
     public int Shell { get; set; }
     public int Level { get; set; }
+    public string LocationCode { get; set; }
     public string Description { get; set; }
 
     public Location(Guid id, int zone, int shell, int level, string description)

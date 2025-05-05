@@ -61,7 +61,7 @@ namespace Library.Domain.BookCopies
             }
 
             var statusResult = bookCopy.Value.ChangeStatus(newStatus);
-            if (statusResult.IsFailure) 
+            if (statusResult.IsFailure)
             {
                 return Result.Failure(statusResult.Error);
             }
@@ -120,7 +120,7 @@ namespace Library.Domain.BookCopies
             }
 
             var updateResult = bookCopyPersistance.UpdateBookCopy(bookCopy.Value, cancellationToken);
-            
+
             if (updateResult.IsFailure)
             {
                 return Result.Failure(updateResult.Error);
@@ -132,9 +132,25 @@ namespace Library.Domain.BookCopies
 
         public async Task<Result<Dictionary<Guid, List<Guid>>>> GetLocationIdsByBookId(List<Guid> bookIds, CancellationToken cancellationToken)
         {
-            
+            var result = await bookCopyPersistance.GetLocationIdsByBookId(bookIds, cancellationToken);
 
-            return null;
+            if (result.IsFailure)
+            {
+                return Result<Dictionary<Guid, List<Guid>>>.Failure(result.Error);
+            }
+
+            return Result<Dictionary<Guid, List<Guid>>>.Success(result.Value!);
+        }
+
+        public async Task<Result<Dictionary<Guid, List<Guid>>>> GetBookIdsByLocationId(Guid locationId, CancellationToken cancellationToken)
+        {
+            var result = await bookCopyPersistance.GetBookIdsByLocationId(locationId, cancellationToken);
+            if (result.IsFailure)
+            {
+                return Result<Dictionary<Guid, List<Guid>>>.Failure(result.Error);
+            }
+
+            return Result<Dictionary<Guid, List<Guid>>>.Success(result.Value);
         }
     }
 }
