@@ -12,12 +12,12 @@ namespace Library.Api.Endpoints.Books
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
             app.MapGet("books", 
-                async (BookService bookService, LocationService locationService, BookCopyService bookCopyService, CancellationToken cancalationToken) =>
+                async Task<Results<Ok<List<GetBookLocationsDto>>, BadRequest<Error>>> (BookService bookService, LocationService locationService, BookCopyService bookCopyService, CancellationToken cancalationToken) =>
                 {
                     var books = await bookService.GetAllBooks(cancalationToken);
                     if (books.IsFailure)
                     {
-                        return Results.BadRequest(books);
+                        return TypedResults.BadRequest(books.Error);
                     }
 
                     var bookIdLocationIds = await bookCopyService
@@ -25,28 +25,27 @@ namespace Library.Api.Endpoints.Books
                             cancalationToken);
                     if (bookIdLocationIds.IsFailure)
                     {
-                        return Results.BadRequest(bookIdLocationIds);
+                        return TypedResults.BadRequest(bookIdLocationIds.Error);
                     }
 
                     var locations = await locationService
                         .GetLocationByIds(bookIdLocationIds.Value.Values.SelectMany(x => x).Distinct().ToList(), cancalationToken);
                     if (locations.IsFailure)
                     {
-                        return Results.BadRequest(locations);
+                        return TypedResults.BadRequest(locations.Error);
                     }
 
                     var result = new List<GetBookLocationsDto>();
 
                     foreach (var bookLocationsValuePair in bookIdLocationIds.Value)
                     {
-                        result.Add(new GetBookLocationsDto
-                        {
-                            Book = books.Value.FirstOrDefault(x => x.Id == bookLocationsValuePair.Key),
-                            Locations = locations.Value.Where(x => bookLocationsValuePair.Value.Contains(x.Id)).ToList()
-                        });
+                        result.Add(
+                        new GetBookLocationsDto(
+                            books.Value.FirstOrDefault(x => x.Id == bookLocationsValuePair.Key),
+                            locations.Value.Where(x => bookLocationsValuePair.Value.Contains(x.Id)).ToList()));
                     }
 
-                    return Results.Ok(result);
+                    return TypedResults.Ok(result);
                 }).WithTags(Tags.Books);
         }
     }

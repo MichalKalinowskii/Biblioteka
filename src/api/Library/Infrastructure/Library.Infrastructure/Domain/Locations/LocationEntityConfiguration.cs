@@ -17,6 +17,8 @@ namespace Library.Infrastructure.Domain.Locations
             builder.Property(b => b.Shell).IsRequired();
 
             builder.Property(b => b.Description);
+
+            builder.Property(b => b.LocationCode).IsRequired();
         }
     }
 }

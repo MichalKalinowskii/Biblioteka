@@ -11,6 +11,9 @@ namespace Library.Domain.Locations.Errors
     {
         public static readonly Error InvalidLocationDescription =
             new Error("LocationErrors.InvalidLocationDescription", "Invalid description of laction given");
+        
+        public static readonly Error InvalidLocationCode =
+            new Error("LocationErrors.InvalidLocationCode", "Invalid location code given");
 
         public static readonly Error InvalidZoneNumber =
             new Error("LocationErrors.InvalidZoneNumber", "Zone number can't be lesser than 1");

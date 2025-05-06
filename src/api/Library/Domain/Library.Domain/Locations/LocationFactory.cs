@@ -16,7 +16,7 @@ namespace Library.Domain.Locations
             
         }
 
-        public static Result<Location> Create(int zone, int level, int shell, string description)
+        public static Result<Location> Create(int zone, int level, int shell, string description, string locationCode)
         {
             if (zone <= (int)default)
             {
@@ -33,7 +33,12 @@ namespace Library.Domain.Locations
                 return Result<Location>.Failure(LocationErrors.InvalidShellNumber);
             }
 
-            var location = new Location(Guid.NewGuid(), zone, shell, level, description ?? string.Empty);
+            if (string.IsNullOrWhiteSpace(locationCode))
+            {
+                return Result<Location>.Failure(LocationErrors.InvalidLocationDescription);
+            }
+
+            var location = new Location(Guid.NewGuid(), zone, shell, level, description ?? string.Empty, locationCode);
 
             return Result<Location>.Success(location);
         }

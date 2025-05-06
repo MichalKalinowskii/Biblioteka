@@ -14,15 +14,17 @@ namespace Library.Domain.Authors.Models
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string LastName { get; set; }
+        public string Description { get; set; }
         public DateTime DateOfBirth { get; set; }
         public DateTime DateOfDeath {  get; set; }
 
-        public Author(string name, string lastName, DateTime dateOfBirth, DateTime dateOfDeath)
+        public Author(string name, string lastName, DateTime dateOfBirth, DateTime dateOfDeath, string description)
         {
             Name = name;
             LastName = lastName;
             DateOfBirth = dateOfBirth;
             DateOfDeath = dateOfDeath;
+            Description = description;
         }
 
         public Result ChangeDateOfDeath(DateTime dateOfDeath)

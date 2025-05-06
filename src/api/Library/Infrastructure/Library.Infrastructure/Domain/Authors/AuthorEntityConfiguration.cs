@@ -22,6 +22,8 @@ namespace Library.Infrastructure.Domain.Authors
             builder.Property(x => x.Name)
                 .IsRequired();
 
+            builder.Property(x => x.Description).IsRequired();
+
             builder.Property(x => x.LastName)
                 .IsRequired();
         }

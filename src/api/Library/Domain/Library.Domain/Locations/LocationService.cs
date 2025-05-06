@@ -23,9 +23,23 @@ namespace Library.Domain.Locations
             int level, 
             int shell, 
             string description, 
+            string locationCode,
             CancellationToken cancellationToken)
         {
-            var location = LocationFactory.Create(zone, level, shell, description);
+            var locationCodeExists = await locationPersistance
+                .LocationCodeExistsAsync(locationCode, cancellationToken);
+
+            if (locationCodeExists.IsFailure)
+            {
+                Result.Failure(locationCodeExists.Error);
+            }
+
+            if (locationCodeExists.Value)
+            {
+                return Result.Failure(new Error("LocationCodeAlreadyExists", "Location code already exist"));
+            }
+
+            var location = LocationFactory.Create(zone, level, shell, description, locationCode);
 
             if (location.IsFailure)
             {
@@ -54,6 +68,35 @@ namespace Library.Domain.Locations
                 return Result<List<Location>>.Failure(locations.Error);
             }
 
+            return Result<List<Location>>.Success(locations.Value!);
+        }
+    
+        public async Task<Result<Location>> GetLocationByCode(string locationCode, CancellationToken cancellationToken)
+        {
+            var location  = await locationPersistance
+                .GetLocationByCodeAsync(locationCode, cancellationToken);
+            
+            if (location.IsFailure)
+            {
+                return Result<Location>.Failure(location.Error);
+            }
+
+            if (location.Value == null)
+            {
+                return Result<Location>.Failure(new Error("LocationNotFound", "Location not found"));
+            }
+
+            return Result<Location>.Success(location.Value!);
+        }
+
+        public async Task<Result<List<Location>>> GetAllLocationsAsync(CancellationToken cancellationToken)
+        {
+            var locations = await locationPersistance
+                .GetAllLocationsAsync(cancellationToken);
+            if (locations.IsFailure)
+            {
+                return Result<List<Location>>.Failure(locations.Error);
+            }
             return Result<List<Location>>.Success(locations.Value!);
         }
     }

@@ -12,5 +12,8 @@ namespace Library.Domain.Locations
     {
         Task<Result> AddLocationAsync(Location location, CancellationToken cancellationToken);
         Task<Result<List<Location>>> GetLocationByIdsAsync(List<Guid> locationIds, CancellationToken cancellationToken);
+        Task<Result<List<Location>>> GetAllLocationsAsync(CancellationToken cancellationToken);
+        Task<Result<bool>> LocationCodeExistsAsync(string locationCode, CancellationToken cancellationToken);
+        Task<Result<Location>> GetLocationByCodeAsync(string locationCode, CancellationToken cancellationToken);
     }
 }
