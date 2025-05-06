@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Library.Api.Endpoints.BookCopies
 {
-    public class ChangeBookCopyStatus : IEndpoint
+    public class ChangeBookCopyStatus //: IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {

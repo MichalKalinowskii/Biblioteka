@@ -3,6 +3,7 @@ using Library.Domain.Authors.Models;
 using Library.Domain.SeedWork;
 using Library.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,11 +14,11 @@ namespace Library.Infrastructure.Domain.Authors
 {
     internal class AuthorRepository : IAuthorPersistance
     {
-        private DbSet<Author> authors;
+        private LibraryContext authorContext;
 
         public AuthorRepository(LibraryContext context)
         {
-            authors = context.Set<Author>();
+            authorContext = context;
         }
 
         public async Task<Result<Author>> AddNewAuthor(Author author, CancellationToken cancellationToken)
@@ -26,7 +27,7 @@ namespace Library.Infrastructure.Domain.Authors
 
             try
             {
-                await authors.AddAsync(author, cancellationToken);
+                await authorContext.Authors.AddAsync(author, cancellationToken);
                 result = Result<Author>.Success(author);
             }
             catch (Exception ex) 
@@ -35,6 +36,46 @@ namespace Library.Infrastructure.Domain.Authors
             }
 
             return result;
+        }
+
+        public async Task<Result<List<Author>>> GetAllAuthorsAsync(CancellationToken cancellationToken)
+        {
+            Result<List<Author>> result = default;
+
+            try
+            {
+                var authors = authorContext.Authors.ToListAsync(cancellationToken);
+                result = Result<List<Author>>.Success(authors.Result);
+            }
+            catch (Exception ex)
+            {
+                result = Result<List<Author>>.Failure(new Error("AuthorRepository.GetAllAuthorsAsync", ex.Message));
+            }
+
+            return result!;
+        }
+
+        public async Task<Result<List<Author>>> GetAuthorByBookIdAsync(Guid bookId, CancellationToken cancellationToken)
+        {
+            Result<List<Author>> result = default;
+
+            try
+            {
+                var authorIds = await authorContext.AuthorBooks
+                    .Where(x => x.BookId == bookId)
+                    .Select(x => x.AuthorId)
+                    .ToListAsync(cancellationToken);
+
+                var authors = await authorContext.Authors.Where(x => authorIds.Contains(x.Id)).ToListAsync(cancellationToken);
+
+                result = Result<List<Author>>.Success(authors);
+            }
+            catch (Exception ex)
+            {
+                result = Result<List<Author>>.Failure(new Error("AuthorRepository.GetAuthorByBookIdAsync", ex.Message));
+            }
+
+            return result!;
         }
     }
 }

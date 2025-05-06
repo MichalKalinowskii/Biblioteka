@@ -26,6 +26,13 @@ namespace Library.Infrastructure.Data
         private BookCopyService _bookCopyService;
         private AuthorService _authorService;
 
+        private readonly Guid location1 = Guid.NewGuid();
+        private readonly Guid location2 = Guid.NewGuid();
+        private readonly Guid location3 = Guid.NewGuid();
+        private readonly Guid location4 = Guid.NewGuid();
+        private readonly Guid location5 = Guid.NewGuid();
+        private readonly Guid location6 = Guid.NewGuid();
+
         public async Task SeedDataAsync()
         {
             using var scope = serviceProvider.CreateScope();
@@ -65,13 +72,6 @@ namespace Library.Infrastructure.Data
             await _dbContext.SaveChangesAsync();
         }
 
-
-        private Guid location1 = Guid.NewGuid();
-        private Guid location2 = Guid.NewGuid();
-        private Guid location3 = Guid.NewGuid();
-        private Guid location4 = Guid.NewGuid();
-        private Guid location5 = Guid.NewGuid();
-        private Guid location6 = Guid.NewGuid();
         private async Task<List<Location>> AddLocations()
         {
             List<Location> locations = new List<Location>();

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Library.Api.Endpoints.Books
 {
-    public class ChangeBookGenre : IEndpoint
+    public class ChangeBookGenre //: IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {

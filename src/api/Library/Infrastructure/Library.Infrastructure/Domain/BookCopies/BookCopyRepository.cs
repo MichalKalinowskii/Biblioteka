@@ -94,10 +94,10 @@ namespace Library.Infrastructure.Domain.BookCopies
             Result<Dictionary<Guid, List<Guid>>> result = default;
 
             try
-            {
+            {              
                 var bookLocations = await bookCopyContext
                     .AsNoTracking()
-                    .Where(b => bookIds.Contains(b.Id))
+                    .Where(b => bookIds.Contains(b.BookId))
                     .GroupBy(x => x.BookId)
                     .ToDictionaryAsync(b => b.Key, l => l.Select(x => x.LocationId).ToList(), cancellationToken);
 
