@@ -14,7 +14,7 @@ namespace Library.Api.Endpoints.Location
         {
             app.MapGet("location/{locationCode}",
                 async Task<Results<Ok<LocationBooksDto>, BadRequest<Error>>> 
-                    (string locationCode, LocationService locationService, BookCopyService bookCopyServicem, BookService bookService, CancellationToken cancalationToken) =>
+                    (string locationCode, LocationService locationService, BookCopyService bookCopyService, BookService bookService, CancellationToken cancalationToken) =>
             {
                 var location = await locationService.GetLocationByCode(locationCode, cancalationToken);
 
@@ -23,7 +23,7 @@ namespace Library.Api.Endpoints.Location
                     return TypedResults.BadRequest(location.Error);
                 }
 
-                var dictionary = await bookCopyServicem.GetBookIdsByLocationId(location.Value.Id, cancalationToken);
+                var dictionary = await bookCopyService.GetBookIdsByLocationId(location.Value.Id, cancalationToken);
 
                 if (dictionary.IsFailure)
                 {
