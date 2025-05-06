@@ -16,7 +16,7 @@ namespace Library.Domain.Authors
             
         }
 
-        public static Result<Author> Create(string name, string lastName, DateTime dateOfBirth, DateTime dateOfDeath)
+        public static Result<Author> Create(string name, string lastName, DateTime dateOfBirth, DateTime dateOfDeath, string description)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -33,7 +33,7 @@ namespace Library.Domain.Authors
                 return Result<Author>.Failure(AuthorErrors.AuthorBirthDateIsMissing);
             }
 
-            var author = new Author(name, lastName, dateOfBirth, dateOfDeath);
+            var author = new Author(name, lastName, dateOfBirth, dateOfDeath, description);
 
             return Result<Author>.Success(author);
         }

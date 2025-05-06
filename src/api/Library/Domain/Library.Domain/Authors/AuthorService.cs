@@ -23,9 +23,10 @@ namespace Library.Domain.Authors
             string lastName,
             DateTime dateOfBirth,
             DateTime dateOfDeath,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken,
+            string description)
         {
-            var authorResult = AuthorFactory.Create(name, lastName, dateOfBirth, dateOfDeath);
+            var authorResult = AuthorFactory.Create(name, lastName, dateOfBirth, dateOfDeath, description);
 
             if (authorResult.IsFailure)
             {

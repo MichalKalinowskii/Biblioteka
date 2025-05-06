@@ -32,6 +32,23 @@ public class LocationRepository : ILocationPersistance
         return result!;
     }
 
+    public async Task<Result<List<Location>>> GetAllLocationsAsync(CancellationToken cancellationToken)
+    {
+        Result<List<Location>> result = default;
+
+        try
+        {
+            var locations = await locationContext.ToListAsync(cancellationToken);
+            result = Result<List<Location>>.Success(locations);
+        }
+        catch (Exception ex)
+        {
+            result = Result<List<Location>>.Failure(new Error("LocationRepository.GetAllLocationsAsync", ex.Message));
+        }
+
+        return result!;
+    }
+
     public async Task<Result<Location>> GetLocationByCodeAsync(string locationCode, CancellationToken cancellationToken)
     {
         Result<Location> result = default;

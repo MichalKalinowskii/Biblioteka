@@ -105,13 +105,6 @@ namespace Library.Domain.BookCopies
                 return Result.Failure(BookCopyErrors.BookCopyNotFound);
             }
 
-            //var locationValid = await locationService.IsLocationIdValid(locationId, cancellationToken);
-
-            //if (locationValid.IsFailure)
-            //{
-            //    return Result.Failure(locationValid.Error);
-            //}
-
             var result = bookCopy.Value.ChangeLocation(locationId);
 
             if (result.IsFailure)

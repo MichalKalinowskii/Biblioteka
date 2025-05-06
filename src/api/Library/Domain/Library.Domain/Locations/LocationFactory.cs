@@ -38,7 +38,7 @@ namespace Library.Domain.Locations
                 return Result<Location>.Failure(LocationErrors.InvalidLocationDescription);
             }
 
-            var location = new Location(Guid.NewGuid(), zone, shell, level, description ?? string.Empty);
+            var location = new Location(Guid.NewGuid(), zone, shell, level, description ?? string.Empty, locationCode);
 
             return Result<Location>.Success(location);
         }

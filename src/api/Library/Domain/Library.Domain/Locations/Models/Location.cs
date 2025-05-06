@@ -12,13 +12,14 @@ public class Location
     public string LocationCode { get; set; }
     public string Description { get; set; }
 
-    public Location(Guid id, int zone, int shell, int level, string description)
+    public Location(Guid id, int zone, int shell, int level, string description, string locationCode)
     {
         Id = id;
         Zone = zone;
         Shell = shell;
         Level = level;
         Description = description;
+        LocationCode = locationCode;
     }
 
     public Result ChangeDescription(string description)

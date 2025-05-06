@@ -88,5 +88,16 @@ namespace Library.Domain.Locations
 
             return Result<Location>.Success(location.Value!);
         }
+
+        public async Task<Result<List<Location>>> GetAllLocationsAsync(CancellationToken cancellationToken)
+        {
+            var locations = await locationPersistance
+                .GetAllLocationsAsync(cancellationToken);
+            if (locations.IsFailure)
+            {
+                return Result<List<Location>>.Failure(locations.Error);
+            }
+            return Result<List<Location>>.Success(locations.Value!);
+        }
     }
 }
