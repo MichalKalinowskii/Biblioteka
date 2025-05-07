@@ -23,7 +23,7 @@ namespace Library.Api.Endpoints.Location
                     return TypedResults.Ok(locations.Value);
 
                 })
-                .RequireAuthorization("client")
+                .RequireAuthorization()
                 .WithTags(Tags.Locations);
         }
     }

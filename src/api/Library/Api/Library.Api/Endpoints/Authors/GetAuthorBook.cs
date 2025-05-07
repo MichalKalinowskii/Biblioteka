@@ -41,7 +41,7 @@ namespace Library.Api.Endpoints.Authors
 
                 return TypedResults.Ok(result);
             })
-            .RequireAuthorization("client")
+            .RequireAuthorization()
             .WithTags(Tags.Authors);
         }
     }

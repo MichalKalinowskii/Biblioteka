@@ -47,7 +47,7 @@ namespace Library.Api.Endpoints.Books
 
                     return TypedResults.Ok(result);
                 })
-                .RequireAuthorization("client")
+                .RequireAuthorization()
                 .WithTags(Tags.Books);
         }
     }
