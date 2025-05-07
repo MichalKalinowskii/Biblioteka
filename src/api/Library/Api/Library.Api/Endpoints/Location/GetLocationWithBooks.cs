@@ -47,7 +47,9 @@ namespace Library.Api.Endpoints.Location
                     new LocationBooksDto(location.Value, books);
                 
                 return TypedResults.Ok(result);
-            }).WithTags(Tags.Locations);
+            })
+            .RequireAuthorization("client")
+            .WithTags(Tags.Locations);
         }
     }
 }

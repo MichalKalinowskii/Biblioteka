@@ -98,6 +98,7 @@ namespace Library.Infrastructure.Domain.BookCopies
                 var bookLocations = await bookCopyContext
                     .AsNoTracking()
                     .Where(b => bookIds.Contains(b.BookId))
+                    .Where(x => x.Status.Id == BookCopyStatus.Available.Id)
                     .GroupBy(x => x.BookId)
                     .ToDictionaryAsync(b => b.Key, l => l.Select(x => x.LocationId).ToList(), cancellationToken);
 
@@ -120,6 +121,7 @@ namespace Library.Infrastructure.Domain.BookCopies
                 var dictionary = await bookCopyContext
                     .AsNoTracking()
                     .Where(l => l.LocationId == locationId)
+                    .Where(x => x.Status.Id == BookCopyStatus.Available.Id)
                     .GroupBy(x => x.LocationId)
                     .ToDictionaryAsync(l => l.Key, b => b.Select(x => x.BookId).ToList(), cancellationToken);
                 result = Result<Dictionary<Guid, List<Guid>>>.Success(dictionary);
@@ -130,6 +132,22 @@ namespace Library.Infrastructure.Domain.BookCopies
             }
 
             return result!;
+        }
+
+        public async Task<List<Guid>> UnavailableBookCopyIds(List<Guid> bookCopyIds, CancellationToken cancellationToken)
+        {
+            return await bookCopyContext
+                .Where(x => bookCopyIds.Contains(x.Id))
+                .Where(x => x.Status.Id != BookCopyStatus.Available.Id)
+                .Select(x => x.Id)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task SetBookCopiesStatus(List<Guid> bookCopyIds, BookCopyStatus status, CancellationToken cancellationToken)
+        {
+            var books = bookCopyContext.Where(x => bookCopyIds.Contains(x.Id));
+
+            await books.ForEachAsync(book => book.Status = status, cancellationToken);
         }
     }
 }

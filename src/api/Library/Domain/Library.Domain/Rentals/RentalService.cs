@@ -1,5 +1,7 @@
 using Library.Domain.SeedWork;
 using Library.Domain.Clients;
+using Library.Domain.BookCopies.Interfaces;
+using Library.Domain.BookCopies.Models;
 
 namespace Library.Domain.Rentals;
 
@@ -8,12 +10,14 @@ public class RentalService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IRentalRepository _rentalRepository;
     private readonly IClientRepository _clientRepository;
+    private readonly IBookCopyPersistance _bookCopyPersistance;
 
-    public RentalService(IUnitOfWork unitOfWork, IRentalRepository rentalRepository, IClientRepository clientRepository)
+    public RentalService(IUnitOfWork unitOfWork, IRentalRepository rentalRepository, IClientRepository clientRepository, IBookCopyPersistance bookCopyPersistance)
     {
         _unitOfWork = unitOfWork;
         _rentalRepository = rentalRepository;
         _clientRepository = clientRepository;
+        _bookCopyPersistance = bookCopyPersistance;
     }
     
     public async Task<Result<Rental>> CreateRentalAsync(Guid libraryCardId, Guid employeeId, List<Guid> bookCopyIds, DateTime returnDate, CancellationToken cancellationToken)
@@ -22,7 +26,13 @@ public class RentalService
         {
             return Result<Rental>.Failure(RentalErrors.InvalidLibraryCard());
         }
-        
+
+        var unavailableBookCopyIds = await _bookCopyPersistance.UnavailableBookCopyIds(bookCopyIds, cancellationToken);
+
+        if (unavailableBookCopyIds.Any())
+        {
+            return Result<Rental>.Failure(new Error("UnavailableBookCopyIds", $"Those book are unavailable {string.Join(" ,", unavailableBookCopyIds)}"));
+        }
         
         Result<Rental> result = Rental.Create(libraryCardId, employeeId, bookCopyIds, returnDate);
 
@@ -31,6 +41,7 @@ public class RentalService
             return Result<Rental>.Failure(result.Error);
         }
         
+        await _bookCopyPersistance.SetBookCopiesStatus(bookCopyIds, BookCopyStatus.Unavailable, cancellationToken);
         await _rentalRepository.AddAsync(result.Value!, cancellationToken);
         await _unitOfWork.CommitAsync(cancellationToken);
 
@@ -52,7 +63,8 @@ public class RentalService
         {
             return result;
         }
-        
+
+        await _bookCopyPersistance.SetBookCopiesStatus(bookCopyIds, BookCopyStatus.Available, cancellationToken);
         await _unitOfWork.CommitAsync(cancellationToken);
         
         return result;
