@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Library.Api.Endpoints.BookCopies
 {
-    public class ChangeBookCopyLocation : IEndpoint
+    public class ChangeBookCopyLocation //: IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {

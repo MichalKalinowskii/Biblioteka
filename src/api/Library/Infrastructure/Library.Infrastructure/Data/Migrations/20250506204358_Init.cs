@@ -62,6 +62,7 @@ namespace Library.Infrastructure.Data.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     LastName = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
                     DateOfBirth = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     DateOfDeath = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -122,6 +123,7 @@ namespace Library.Infrastructure.Data.Migrations
                     Zone = table.Column<int>(type: "integer", nullable: false),
                     Shell = table.Column<int>(type: "integer", nullable: false),
                     Level = table.Column<int>(type: "integer", nullable: false),
+                    LocationCode = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>

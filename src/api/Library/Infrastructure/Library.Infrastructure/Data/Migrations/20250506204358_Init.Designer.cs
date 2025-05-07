@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Library.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    [Migration("20250504214517_Init")]
+    [Migration("20250506204358_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -36,6 +36,10 @@ namespace Library.Infrastructure.Data.Migrations
 
                     b.Property<DateTime>("DateOfDeath")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -222,6 +226,10 @@ namespace Library.Infrastructure.Data.Migrations
 
                     b.Property<int>("Level")
                         .HasColumnType("integer");
+
+                    b.Property<string>("LocationCode")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("Shell")
                         .HasColumnType("integer");

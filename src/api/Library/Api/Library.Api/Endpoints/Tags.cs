@@ -8,4 +8,5 @@ public static class Tags
     public const string BookCopy = "BookCopy";
     public const string Clients = "Clients";
     public const string Locations = "Locations";
+    public const string Authors = "Authors";
 }

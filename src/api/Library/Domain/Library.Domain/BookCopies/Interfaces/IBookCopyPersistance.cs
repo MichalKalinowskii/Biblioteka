@@ -21,5 +21,9 @@ namespace Library.Domain.BookCopies.Interfaces
         Task<Result<Dictionary<Guid, List<Guid>>>> GetLocationIdsByBookId(List<Guid> bookIds, CancellationToken cancellationToken);
         
         Task<Result<Dictionary<Guid, List<Guid>>>> GetBookIdsByLocationId(Guid locationId, CancellationToken cancellationToken);
+
+        Task<List<Guid>> UnavailableBookCopyIds(List<Guid> bookCopyIds, CancellationToken cancellationToken);
+
+        Task SetBookCopiesStatus(List<Guid> bookCopyIds, BookCopyStatus status, CancellationToken cancellationToken);
     }
 }

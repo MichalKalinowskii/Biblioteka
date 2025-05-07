@@ -11,5 +11,7 @@ namespace Library.Domain.Authors
     public interface IAuthorPersistance
     {
         Task<Result<Author>> AddNewAuthor(Author author, CancellationToken cancellationToken);
+        Task<Result<List<Author>>> GetAllAuthorsAsync(CancellationToken cancellationToken);
+        Task<Result<List<Author>>> GetAuthorByBookIdAsync(Guid bookId, CancellationToken cancellationToken);
     }
 }
